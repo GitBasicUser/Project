@@ -12,11 +12,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Activity;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
 
@@ -29,11 +32,14 @@ public class MainActivity extends AppCompatActivity {
     private Button settingBtn;
     private TextView test;
 
+    private TextToSpeech myTTS;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        myTTS = new TextToSpeech(this, this);
         mTextTv = findViewById(R.id.textTv);
         mVoiceBtn = findViewById(R.id.voiceBtn);
         settingBtn = findViewById(R.id.settingBtn);
@@ -45,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
             place = get.getStringExtra("place");
             test.setText(place);
         }
+
 
         //button click to show speech to text dialog 텍스트 대화 상자에 음성을 표시하려면 버튼 클릭
         mVoiceBtn.setOnClickListener(new View.OnClickListener() {
@@ -59,10 +66,18 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mVoiceBtn.performClick();
             }
-        }, 500);
-
+        }, 3500);
 
     }
+
+    @Override
+    public void onInit(int status) {
+        String myText1 = "안녕하세요";
+        String myText2 = "음성인식 배달 앱 입니다.";
+        myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
+        myTTS.speak(myText2, TextToSpeech.QUEUE_ADD, null);
+    }
+
 
     View.OnClickListener onClick = new View.OnClickListener() {
         @Override
@@ -126,14 +141,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void btsClick(String text){
-        if (text.equals(settingBtn.getText().toString())){
+    private void btsClick(String text) {
+        if (text.equals(settingBtn.getText().toString())) {
             n++;
             Intent i = new Intent(MainActivity.this, Setting.class);
             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
             i.putExtra("place", place);
             startActivity(i);
-        }else {
+        } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -141,6 +156,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }, 1000);
         }
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        myTTS.shutdown();
     }
 
 
