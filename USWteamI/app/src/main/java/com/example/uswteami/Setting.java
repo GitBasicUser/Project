@@ -292,9 +292,11 @@ public class Setting extends AppCompatActivity implements OnInitListener {
     }
 
     @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        myTTS.shutdown();
+    protected void onStop() {
+        super.onStop();
+        if (myTTS != null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
     }
-
 }
