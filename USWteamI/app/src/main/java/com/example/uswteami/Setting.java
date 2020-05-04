@@ -2,123 +2,85 @@ package com.example.uswteami;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.speech.tts.TextToSpeech.OnInitListener;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class Setting extends AppCompatActivity {
-
-
+public class Setting extends AppCompatActivity implements OnInitListener {
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
 
-
-
     private ArrayList<Button> bs = new ArrayList<>();
-
     private Button placeLayoutChange, back, save;
-
     private TextView placeLayout, text;
-
     private ImageButton mVoiceBtn;
-
     private static String place, speech;
 
-
-
     private Intent intent;
-
     private SpeechRecognizer mRecognizer_setting;
 
-
+    private TextToSpeech myTTS;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_setting);
 
-
-
         Intent getp = getIntent();
-
         place = getp.getStringExtra("place");
 
-
-
         placeLayoutChange = (Button)findViewById(R.id.placeLayoutChange);
-
         back = (Button)findViewById(R.id.back);
-
         save = (Button)findViewById(R.id.btn_save);
-
         mVoiceBtn = findViewById(R.id.voiceBtn);
-
         bs.add(placeLayoutChange);
-
         bs.add(back);
-
         bs.add(save);
 
-
+        myTTS = new TextToSpeech(this, this);
 
         text = (TextView)findViewById(R.id.text);
-
         placeLayout = (TextView)findViewById(R.id.placeLayout);
-
         placeLayout.setText(place);
 
-
-
         back.setOnClickListener(onClick);
-
         save.setOnClickListener(onClick);
-
         placeLayoutChange.setOnClickListener(onClick);
 
-
-
         mVoiceBtn.setOnClickListener(new View.OnClickListener() {
-
             @Override
-
             public void onClick(View v) {
-
                 speak();
-
             }
-
         });
 
-
-
         new Handler().postDelayed(new Runnable() {
-
             @Override
-
             public void run() {
-
                 mVoiceBtn.performClick();
-
             }
-
         }, 500);
-
-
 
     }
 
+    @Override
+    public void onInit(int status) {
+        String myText1 = "설정입니다.";
+        myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
+    }
 
 
     View.OnClickListener onClick = new View.OnClickListener() {
@@ -329,6 +291,10 @@ public class Setting extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        myTTS.shutdown();
+    }
 
 }
