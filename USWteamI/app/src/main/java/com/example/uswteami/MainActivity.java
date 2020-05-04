@@ -72,10 +72,12 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     @Override
     public void onInit(int status) {
-        String myText1 = "안녕하세요";
-        String myText2 = "음성인식 배달 앱 입니다.";
+        String myText1 = "음성인식 배달 앱 입니다.";
+        String myText2 = "설정을 원하시면 설정을 말하고, 주문을 원하시면 카테고리에서 메뉴를 골라주세요.";
+        String myText3 = "카테고리에는 치킨, 피자, 중식, 분식, 한식, 야식이 있습니다.";
         myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
         myTTS.speak(myText2, TextToSpeech.QUEUE_ADD, null);
+        myTTS.speak(myText3, TextToSpeech.QUEUE_ADD, null);
     }
 
 
