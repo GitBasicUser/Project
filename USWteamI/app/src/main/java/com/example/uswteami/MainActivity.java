@@ -158,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
             i.putExtra("place", place);
             startActivity(i);
+<<<<<<< HEAD
         } else if(text.equals(chicken.getText().toString())){
             Intent j = new Intent(MainActivity.this, Chicken.class);
             j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
@@ -165,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             startActivity(j);
         }
         else {
+=======
+        } else {
+>>>>>>> 225f8a1ee7573ee373aee3bf857a6afb6000c96c
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
