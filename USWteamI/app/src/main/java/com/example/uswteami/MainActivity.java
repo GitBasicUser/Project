@@ -12,11 +12,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Activity;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
 
@@ -27,16 +30,21 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextTv;
     private ImageButton mVoiceBtn;
     private Button settingBtn;
+    private Button chicken;
     private TextView test;
+
+    private TextToSpeech myTTS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        myTTS = new TextToSpeech(this, this);
         mTextTv = findViewById(R.id.textTv);
         mVoiceBtn = findViewById(R.id.voiceBtn);
         settingBtn = findViewById(R.id.settingBtn);
+        chicken = findViewById(R.id.btn_chicken);
         test = (TextView) findViewById(R.id.testText);
 
         settingBtn.setOnClickListener(onClick);
@@ -45,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             place = get.getStringExtra("place");
             test.setText(place);
         }
+
 
         //button click to show speech to text dialog 텍스트 대화 상자에 음성을 표시하려면 버튼 클릭
         mVoiceBtn.setOnClickListener(new View.OnClickListener() {
@@ -59,10 +68,20 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mVoiceBtn.performClick();
             }
-        }, 500);
-
+        }, 3500);
 
     }
+
+    @Override
+    public void onInit(int status) {
+        String myText1 = "음성인식 배달 앱 입니다.";
+        String myText2 = "설정을 원하시면 설정을 말하고, 주문을 원하시면 카테고리에서 메뉴를 골라주세요.";
+        String myText3 = "카테고리에는 치킨, 피자, 중식, 분식, 한식, 야식이 있습니다.";
+        myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
+        myTTS.speak(myText2, TextToSpeech.QUEUE_ADD, null);
+        myTTS.speak(myText3, TextToSpeech.QUEUE_ADD, null);
+    }
+
 
     View.OnClickListener onClick = new View.OnClickListener() {
         @Override
@@ -74,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
                     i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                     i.putExtra("place", place);
                     startActivity(i);
+                    break;
+                case R.id.btn_chicken:
+                    Intent j = new Intent(MainActivity.this, Chicken.class);
+                    j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
+                    j.putExtra("place", place);
+                    startActivity(j);
                     break;
             }
         }
@@ -126,20 +151,35 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void btsClick(String text){
-        if (text.equals(settingBtn.getText().toString())){
+    private void btsClick(String text) {
+        if (text.equals(settingBtn.getText().toString())) {
             n++;
             Intent i = new Intent(MainActivity.this, Setting.class);
             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
             i.putExtra("place", place);
             startActivity(i);
-        }else {
+        } else if(text.equals(chicken.getText().toString())){
+            Intent j = new Intent(MainActivity.this, Chicken.class);
+            j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
+            j.putExtra("place", place);
+            startActivity(j);
+        }
+        else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mVoiceBtn.performClick();
                 }
             }, 1000);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (myTTS != null){
+            myTTS.stop();
+            myTTS.shutdown();
         }
     }
 
