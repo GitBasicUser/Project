@@ -2,6 +2,7 @@ package com.example.uswteami;
 
 import android.app.Application;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +32,7 @@ public class Chicken extends AppCompatActivity {
     private static final String TAG_NAME = "name";
     private static final String TAG_ADDRESS ="address";
 
-    private TextView mTextViewResult;
+    private TextView place_layout;
     ArrayList<HashMap<String, String>> mArrayList;
     ListView mlistView;
     String mJsonString;
@@ -41,10 +42,20 @@ public class Chicken extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chicken_layout);
 
-        mTextViewResult = (TextView)findViewById(R.id.textView_main_result);
+        place_layout = (TextView)findViewById(R.id.placeLayout);
         mlistView = (ListView) findViewById(R.id.listView_main_list);
         mArrayList = new ArrayList<>();
 
+
+        String place;
+        Intent get = getIntent();
+        place = get.getStringExtra("place");
+        if(place == null){
+            Log.v("p: ","null");
+        }else {
+            Log.v("p: ", place);
+            place_layout.setText(place);
+        }
         GetData task = new GetData();
         task.execute("http://uswteami.dothome.co.kr/test/board/chicken/json.php");
     }
@@ -67,12 +78,10 @@ public class Chicken extends AppCompatActivity {
             super.onPostExecute(result);
 
             progressDialog.dismiss();
-            mTextViewResult.setText(result);
             Log.d(TAG, "response  - " + result);
 
             if (result == null){
 
-                mTextViewResult.setText(errorString);
             }
             else {
 

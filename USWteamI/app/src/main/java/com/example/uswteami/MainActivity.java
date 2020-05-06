@@ -47,13 +47,12 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         chicken = findViewById(R.id.btn_chicken);
         test = (TextView) findViewById(R.id.testText);
 
-        settingBtn.setOnClickListener(onClick);
+        //settingBtn.setOnClickListener(onClick);
         if (n != 0) {
             Intent get = getIntent();
             place = get.getStringExtra("place");
-            test.setText(place);
         }
-
+        test.setText(place);
 
         //button click to show speech to text dialog 텍스트 대화 상자에 음성을 표시하려면 버튼 클릭
         mVoiceBtn.setOnClickListener(new View.OnClickListener() {
@@ -83,26 +82,26 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     }
 
 
-    View.OnClickListener onClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.settingBtn:
-                    n++;
-                    Intent i = new Intent(MainActivity.this, Setting.class);
-                    i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-                    i.putExtra("place", place);
-                    startActivity(i);
-                    break;
-                case R.id.btn_chicken:
-                    Intent j = new Intent(MainActivity.this, Chicken.class);
-                    j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
-                    j.putExtra("place", place);
-                    startActivity(j);
-                    break;
-            }
-        }
-    };
+//    View.OnClickListener onClick = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            switch (v.getId()) {
+//                case R.id.settingBtn:
+//                    n++;
+//                    Intent i = new Intent(MainActivity.this, Setting.class);
+//                    i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+//                    i.putExtra("place", place);
+//                    startActivity(i);
+//                    break;
+//                case R.id.btn_chicken:
+//                    Intent j = new Intent(MainActivity.this, Chicken.class);
+//                    j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
+//                    j.putExtra("place", place);
+//                    startActivity(j);
+//                    break;
+//            }
+//        }
+//    };
 
 
     private void speak() {
@@ -158,17 +157,12 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
             i.putExtra("place", place);
             startActivity(i);
-<<<<<<< HEAD
         } else if(text.equals(chicken.getText().toString())){
             Intent j = new Intent(MainActivity.this, Chicken.class);
             j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
             j.putExtra("place", place);
             startActivity(j);
-        }
-        else {
-=======
         } else {
->>>>>>> 225f8a1ee7573ee373aee3bf857a6afb6000c96c
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
