@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -33,6 +35,7 @@ public class Chicken extends AppCompatActivity {
     private static final String TAG_ADDRESS ="address";
 
     private TextView place_layout;
+    private Button back;
     ArrayList<HashMap<String, String>> mArrayList;
     ListView mlistView;
     String mJsonString;
@@ -43,6 +46,7 @@ public class Chicken extends AppCompatActivity {
         setContentView(R.layout.chicken_layout);
 
         place_layout = (TextView)findViewById(R.id.placeLayout);
+        back = (Button)findViewById(R.id.back);
         mlistView = (ListView) findViewById(R.id.listView_main_list);
         mArrayList = new ArrayList<>();
 
@@ -50,16 +54,25 @@ public class Chicken extends AppCompatActivity {
         String place;
         Intent get = getIntent();
         place = get.getStringExtra("place");
-        if(place == null){
-            Log.v("p: ","null");
-        }else {
-            Log.v("p: ", place);
-            place_layout.setText(place);
-        }
+        place_layout.setText(place);
+
+        back.setOnClickListener(onClick);
+
         GetData task = new GetData();
         task.execute("http://uswteami.dothome.co.kr/test/board/chicken/json.php");
     }
 
+
+    View.OnClickListener onClick = new View.OnClickListener(){
+
+
+        @Override
+        public void onClick(View v) {
+            Intent i = new Intent(Chicken.this, MainActivity.class);
+            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+        }
+    };
 
     private class GetData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
