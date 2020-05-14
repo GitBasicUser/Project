@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,53 +26,61 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Chicken extends AppCompatActivity {
+
+    private TextToSpeech myTTS;
     private static String TAG = "phptest_MainActivity";
     private static final String TAG_JSON="webnautes";
     private static final String TAG_ID = "id";
     private static final String TAG_NAME = "name";
     private static final String TAG_ADDRESS ="address";
 
+
     private TextView place_layout;
-    private Button back;
     ArrayList<HashMap<String, String>> mArrayList;
+    List<String> names = new ArrayList<>();
     ListView mlistView;
     String mJsonString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chicken_layout);
+        setContentView(R.layout.activity_chicken);
 
         place_layout = (TextView)findViewById(R.id.placeLayout);
-        back = (Button)findViewById(R.id.back);
         mlistView = (ListView) findViewById(R.id.listView_main_list);
         mArrayList = new ArrayList<>();
+
+        myTTS = new TextToSpeech(this, new OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                String Text = "치킨 카테고리입니다.";
+                myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
+
+                for(String n : names){
+                    myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
+                }
+            }
+        });
 
 
         String place;
         Intent get = getIntent();
         place = get.getStringExtra("place");
-        place_layout.setText(place);
-
-        back.setOnClickListener(onClick);
-
+        if(place == null){
+            Log.v("p: ","null");
+        }else {
+            Log.v("p: ", place);
+            place_layout.setText(place);
+        }
         GetData task = new GetData();
         task.execute("http://uswteami.dothome.co.kr/test/board/chicken/json.php");
+
+
     }
 
-
-    View.OnClickListener onClick = new View.OnClickListener(){
-
-
-        @Override
-        public void onClick(View v) {
-            Intent i = new Intent(Chicken.this, MainActivity.class);
-            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-        }
-    };
 
     private class GetData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
@@ -172,16 +180,22 @@ public class Chicken extends AppCompatActivity {
                 JSONObject item = jsonArray.getJSONObject(i);
 
                 String id = item.getString("PrimaryKey");
-                String name = item.getString("가게이름");
+                String name = item.getString("가게이름"); //가게변수, key 값저장
+
+                myTTS.speak(name, TextToSpeech.QUEUE_FLUSH, null);
+
                 String address = item.getString("주소");
+
 
                 HashMap<String,String> hashMap = new HashMap<>();
 
                 hashMap.put(TAG_ID, id);
-                hashMap.put(TAG_NAME, name);
+                hashMap.put(TAG_NAME, name); //value
                 hashMap.put(TAG_ADDRESS, address);
 
                 mArrayList.add(hashMap);
+                names.add(name);
+
             }
 
             ListAdapter adapter = new SimpleAdapter(
@@ -197,6 +211,15 @@ public class Chicken extends AppCompatActivity {
             Log.d(TAG, "showResult : ", e);
         }
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (myTTS != null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
     }
 
 }
