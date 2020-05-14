@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             public void run() {
                 mVoiceBtn.performClick();
             }
-        }, 3500);
+        }, 500);
 
     }
 
@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
                     //set to text view 텍스트 보기로 설정
                     mTextTv.setText(result.get(0));
                     btsClick(result.get(0));
+                     if (result.get(0).equals("다시 듣기")){
+                        onInit(0);
                 }
                 break;
             }
