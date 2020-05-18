@@ -8,16 +8,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+<<<<<<< HEAD
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+=======
+>>>>>>> 401352adadd68d7c691c78439e1bb5d12e08edfa
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
+<<<<<<< HEAD
 import android.widget.Toast;
+=======
+>>>>>>> 401352adadd68d7c691c78439e1bb5d12e08edfa
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,11 +40,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Locale;
 
 public class Chicken extends AppCompatActivity {
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
+=======
+
+public class Chicken extends AppCompatActivity {
+
+>>>>>>> 401352adadd68d7c691c78439e1bb5d12e08edfa
     private TextToSpeech myTTS;
     private static String TAG = "phptest_MainActivity";
     private static final String TAG_JSON="webnautes";
@@ -47,10 +59,15 @@ public class Chicken extends AppCompatActivity {
     private static final String TAG_ADDRESS ="address";
 
 
+<<<<<<< HEAD
     private ImageButton mVoiceBtn;
     private TextView place_layout;
     ArrayList<HashMap<String, String>> mArrayList;
     HashMap<String,String> shops = new HashMap<>();
+=======
+    private TextView place_layout;
+    ArrayList<HashMap<String, String>> mArrayList;
+>>>>>>> 401352adadd68d7c691c78439e1bb5d12e08edfa
     List<String> names = new ArrayList<>();
     ListView mlistView;
     String mJsonString;
@@ -58,12 +75,24 @@ public class Chicken extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chicken_layout);
+        setContentView(R.layout.activity_chicken);
 
         place_layout = (TextView)findViewById(R.id.placeLayout);
         mlistView = (ListView) findViewById(R.id.listView_main_list);
         mArrayList = new ArrayList<>();
         mVoiceBtn = (ImageButton)findViewById(R.id.voiceBtn);
+
+        myTTS = new TextToSpeech(this, new OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                String Text = "치킨 카테고리입니다.";
+                myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
+
+                for(String n : names){
+                    myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
+                }
+            }
+        });
 
         myTTS = new TextToSpeech(this, new OnInitListener() {
             @Override
@@ -88,6 +117,7 @@ public class Chicken extends AppCompatActivity {
             place_layout.setText(place);
         }
         GetData task = new GetData();
+<<<<<<< HEAD
         task.execute("http://uswteami.dothome.co.kr/my/board/chicken/json.php");
 
         mVoiceBtn.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +160,13 @@ public class Chicken extends AppCompatActivity {
 
     }
 
+=======
+        task.execute("http://uswteami.dothome.co.kr/test/board/chicken/json.php");
+
+
+    }
+
+>>>>>>> 401352adadd68d7c691c78439e1bb5d12e08edfa
 
     private class GetData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
@@ -260,15 +297,28 @@ public class Chicken extends AppCompatActivity {
 
                 JSONObject item = jsonArray.getJSONObject(i);
 
+<<<<<<< HEAD
                 Integer num = i + 1;
                 String name = item.getString("가게이름");
+=======
+                String id = item.getString("PrimaryKey");
+                String name = item.getString("가게이름"); //가게변수, key 값저장
+
+                myTTS.speak(name, TextToSpeech.QUEUE_FLUSH, null);
+
+>>>>>>> 401352adadd68d7c691c78439e1bb5d12e08edfa
                 String address = item.getString("주소");
                 String shop = item.getString("nickname");
 
 
+
                 HashMap<String,String> hashMap = new HashMap<>();
 
+<<<<<<< HEAD
                 hashMap.put(TAG_ID, num.toString());
+=======
+                hashMap.put(TAG_ID, id);
+>>>>>>> 401352adadd68d7c691c78439e1bb5d12e08edfa
                 hashMap.put(TAG_NAME, name); //value
                 hashMap.put(TAG_ADDRESS, address);
                 shops.put(name, shop);

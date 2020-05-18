@@ -129,6 +129,31 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     //receive voice input and handle it 음성을 입력 받아 처리
 
+<<<<<<< HEAD
+=======
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        switch (requestCode) {
+            case REQUEST_CODE_SPEECH_INPUT: {
+                if (resultCode == RESULT_OK && null != data) {
+                    //get text array from voice intent 음성 인텐트에서 텍스트 배열 가져오기
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    //set to text view 텍스트 보기로 설정
+                    mTextTv.setText(result.get(0));
+                    btsClick(result.get(0));
+                     if (result.get(0).equals("다시 듣기")){
+                        onInit(0);
+                }
+                break;
+            }
+        }
+
+
+    }
+>>>>>>> 401352adadd68d7c691c78439e1bb5d12e08edfa
 
     private void btsClick(String text) {
         if (text.equals(settingBtn.getText().toString())) {
