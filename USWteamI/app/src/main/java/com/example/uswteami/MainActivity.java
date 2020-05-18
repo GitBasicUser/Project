@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             public void run() {
                 mVoiceBtn.performClick();
             }
-        }, 3500);
+        }, 500);
 
     }
 
@@ -129,26 +129,6 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     //receive voice input and handle it 음성을 입력 받아 처리
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-
-        switch (requestCode) {
-            case REQUEST_CODE_SPEECH_INPUT: {
-                if (resultCode == RESULT_OK && null != data) {
-                    //get text array from voice intent 음성 인텐트에서 텍스트 배열 가져오기
-                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    //set to text view 텍스트 보기로 설정
-                    mTextTv.setText(result.get(0));
-                    btsClick(result.get(0));
-                }
-                break;
-            }
-        }
-
-
-    }
 
     private void btsClick(String text) {
         if (text.equals(settingBtn.getText().toString())) {
@@ -157,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
             i.putExtra("place", place);
             startActivity(i);
-        } else if(text.equals(chicken.getText().toString())){
+        } else if (text.equals(chicken.getText().toString())) {
             Intent j = new Intent(MainActivity.this, Chicken.class);
             j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
             j.putExtra("place", place);
@@ -175,11 +155,35 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     @Override
     protected void onStop() {
         super.onStop();
-        if (myTTS != null){
+        if (myTTS != null) {
             myTTS.stop();
             myTTS.shutdown();
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+
+        switch (requestCode) {
+            case REQUEST_CODE_SPEECH_INPUT: {
+                if (resultCode == RESULT_OK && null != data) {
+                    //get text array from voice intent 음성 인텐트에서 텍스트 배열 가져오기
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    //set to text view 텍스트 보기로 설정
+                    mTextTv.setText(result.get(0));
+                    btsClick(result.get(0));
+                    if (result.get(0).equals("다시 듣기")) {
+                        onInit(0);
+                    }
+                    break;
+                }
+            }
+
+
+        }
+
+
+    }
 }

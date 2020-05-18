@@ -221,9 +221,16 @@ public class Setting extends AppCompatActivity implements OnInitListener {
 
         if(text.equals(bs.get(0).getText().toString())){
 
-            if(placeLayout.getText().toString().equals("거리순")) placeLayout.setText("별점순");
-
-            else placeLayout.setText("거리순");
+             if(placeLayout.getText().toString().equals("거리순")){
+                placeLayout.setText("별점순");
+                String myText2 = "별점순입니다.";
+                myTTS.speak(myText2, TextToSpeech.QUEUE_FLUSH, null);
+            }
+            else {
+                placeLayout.setText("거리순");
+                String myText3 = "거리순입니다.";
+                myTTS.speak(myText3, TextToSpeech.QUEUE_FLUSH, null);
+            }
 
             new Handler().postDelayed(new Runnable() {
 

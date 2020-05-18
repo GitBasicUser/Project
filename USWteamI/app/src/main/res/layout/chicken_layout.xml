@@ -26,6 +26,14 @@
             android:gravity="right"
             android:textSize="30dp"/>
 
+        <ImageButton
+            android:id="@+id/voiceBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_mic"
+            android:scaleType="fitCenter"
+
+            />
 
     </LinearLayout>
 

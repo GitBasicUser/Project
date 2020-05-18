@@ -5,14 +5,21 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
@@ -26,17 +33,25 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 public class Chicken extends AppCompatActivity {
+
+    private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
+    private TextToSpeech myTTS;
     private static String TAG = "phptest_MainActivity";
     private static final String TAG_JSON="webnautes";
     private static final String TAG_ID = "id";
     private static final String TAG_NAME = "name";
     private static final String TAG_ADDRESS ="address";
 
+
+    private ImageButton mVoiceBtn;
     private TextView place_layout;
-    private Button back;
     ArrayList<HashMap<String, String>> mArrayList;
+    HashMap<String,String> shops = new HashMap<>();
+    List<String> names = new ArrayList<>();
     ListView mlistView;
     String mJsonString;
 
@@ -46,33 +61,75 @@ public class Chicken extends AppCompatActivity {
         setContentView(R.layout.chicken_layout);
 
         place_layout = (TextView)findViewById(R.id.placeLayout);
-        back = (Button)findViewById(R.id.back);
         mlistView = (ListView) findViewById(R.id.listView_main_list);
         mArrayList = new ArrayList<>();
+        mVoiceBtn = (ImageButton)findViewById(R.id.voiceBtn);
+
+        myTTS = new TextToSpeech(this, new OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                String Text = "치킨 카테고리입니다.";
+                myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
+
+                for(String n : names){
+                    myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
+                }
+            }
+        });
 
 
         String place;
         Intent get = getIntent();
         place = get.getStringExtra("place");
-        place_layout.setText(place);
-
-        back.setOnClickListener(onClick);
-
+        if(place == null){
+            Log.v("p: ","null");
+        }else {
+            Log.v("p: ", place);
+            place_layout.setText(place);
+        }
         GetData task = new GetData();
-        task.execute("http://uswteami.dothome.co.kr/test/board/chicken/json.php");
+        task.execute("http://uswteami.dothome.co.kr/my/board/chicken/json.php");
+
+        mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speak();
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mVoiceBtn.performClick();
+            }
+        }, 500);
+
+
     }
 
+    private void speak() {
+        //intent to show speech to text dialog 텍스트 대화 상자에 음성 표시
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 
-    View.OnClickListener onClick = new View.OnClickListener(){
 
+        //start intent 인텐트 시작
+        try {
+            //in there was no error
+            //show dialog
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
 
-        @Override
-        public void onClick(View v) {
-            Intent i = new Intent(Chicken.this, MainActivity.class);
-            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
+        } catch (Exception e) {
+            //if there was some error
+            //get message of error and show
+            Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+
         }
-    };
+
+    }
+
 
     private class GetData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
@@ -161,6 +218,38 @@ public class Chicken extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        switch (requestCode) {
+            case REQUEST_CODE_SPEECH_INPUT: {
+                if (resultCode == RESULT_OK && null != data) {
+                    //get text array from voice intent 음성 인텐트에서 텍스트 배열 가져오기
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    //set to text view 텍스트 보기로 설정
+                    for(String n : names){
+                        if(result.get(0).equals(n)){
+                            Intent i = new Intent(Chicken.this,Menu.class);
+                            i.putExtra("shop", shops.get(n));
+                            startActivity(i);
+                        }
+                    }
+                    if(result.get(0).equals("뒤로")){
+                        Intent i = new Intent(Chicken.this, MainActivity.class);
+                        startActivity(i);
+                    }
+                    break;
+                }
+            }
+
+
+        }
+
+
+    }
+
 
     private void showResult(){
         try {
@@ -171,17 +260,22 @@ public class Chicken extends AppCompatActivity {
 
                 JSONObject item = jsonArray.getJSONObject(i);
 
-                String id = item.getString("PrimaryKey");
+                Integer num = i + 1;
                 String name = item.getString("가게이름");
                 String address = item.getString("주소");
+                String shop = item.getString("nickname");
+
 
                 HashMap<String,String> hashMap = new HashMap<>();
 
-                hashMap.put(TAG_ID, id);
-                hashMap.put(TAG_NAME, name);
+                hashMap.put(TAG_ID, num.toString());
+                hashMap.put(TAG_NAME, name); //value
                 hashMap.put(TAG_ADDRESS, address);
+                shops.put(name, shop);
 
                 mArrayList.add(hashMap);
+                names.add(name);
+
             }
 
             ListAdapter adapter = new SimpleAdapter(
@@ -197,6 +291,15 @@ public class Chicken extends AppCompatActivity {
             Log.d(TAG, "showResult : ", e);
         }
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (myTTS != null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
     }
 
 }
