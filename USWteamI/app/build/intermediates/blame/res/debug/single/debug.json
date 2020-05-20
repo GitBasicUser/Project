@@ -72,6 +72,10 @@
         "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\drawable\\chicken.PNG"
     },
     {
+        "merged": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\build\\intermediates\\res\\merged\\debug\\layout_payment_layout.xml.flat",
+        "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\layout\\payment_layout.xml"
+    },
+    {
         "merged": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\build\\intermediates\\res\\merged\\debug\\drawable_jajang.PNG.flat",
         "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\drawable\\jajang.PNG"
     },

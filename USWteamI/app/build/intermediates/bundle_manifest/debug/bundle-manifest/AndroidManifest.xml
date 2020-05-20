@@ -25,6 +25,7 @@
         <activity android:name="com.example.uswteami.Setting" />
         <activity android:name="com.example.uswteami.Chicken" />
         <activity android:name="com.example.uswteami.Menu" />
+        <activity android:name="com.example.uswteami.Payment" />
         <activity android:name="com.example.uswteami.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

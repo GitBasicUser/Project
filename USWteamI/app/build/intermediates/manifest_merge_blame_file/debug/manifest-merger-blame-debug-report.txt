@@ -18,7 +18,7 @@
 12-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:5:22-68
 13
 14    <application
-14-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:7:5-24:19
+14-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:7:5-25:19
 15        android:allowBackup="true"
 15-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:8:9-35
 16        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -45,20 +45,23 @@
 27        <activity android:name="com.example.uswteami.Menu" />
 27-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:16:9-51
 27-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:16:19-39
-28        <activity android:name="com.example.uswteami.MainActivity" >
-28-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:17:9-23:20
-28-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:17:19-47
-29            <intent-filter>
-29-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:18:13-22:29
-30                <action android:name="android.intent.action.MAIN" />
-30-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:19:17-69
-30-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:19:25-66
-31
-32                <category android:name="android.intent.category.LAUNCHER" />
-32-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:21:17-77
-32-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:21:27-74
-33            </intent-filter>
-34        </activity>
-35    </application>
-36
-37</manifest>
+28        <activity android:name="com.example.uswteami.Payment" />
+28-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:17:9-54
+28-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:17:19-42
+29        <activity android:name="com.example.uswteami.MainActivity" >
+29-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:18:9-24:20
+29-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:18:19-47
+30            <intent-filter>
+30-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:19:13-23:29
+31                <action android:name="android.intent.action.MAIN" />
+31-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:20:17-69
+31-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:20:25-66
+32
+33                <category android:name="android.intent.category.LAUNCHER" />
+33-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:22:17-77
+33-->D:\School\2-1\Java\Project\Project\USWteamI\app\src\main\AndroidManifest.xml:22:27-74
+34            </intent-filter>
+35        </activity>
+36    </application>
+37
+38</manifest>

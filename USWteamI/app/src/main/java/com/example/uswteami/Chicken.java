@@ -36,8 +36,9 @@ import java.util.Locale;
 public class Chicken extends AppCompatActivity {
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
-
     private TextToSpeech myTTS;
+    private ImageButton mVoiceBtn;
+
     private static String TAG = "phptest_MainActivity";
     private static final String TAG_JSON="webnautes";
     private static final String TAG_ID = "id";
@@ -45,13 +46,14 @@ public class Chicken extends AppCompatActivity {
     private static final String TAG_ADDRESS ="address";
     private static String mJsonString;
 
-
-    private ImageButton mVoiceBtn;
     private TextView place_layout;
     ArrayList<HashMap<String, String>> mArrayList;
     HashMap<String,String> shops = new HashMap<>();
+    HashMap<String,String> shopnames = new HashMap<>();
     List<String> names = new ArrayList<>();
     ListView mlistView;
+
+    private static String place;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,16 +71,17 @@ public class Chicken extends AppCompatActivity {
             myTTS = new TextToSpeech(this, new OnInitListener() {
                 @Override
                 public void onInit(int status) {
-                    String Text = "치킨 카테고리입니다.";
+                    String Text = "치킨 카테고리입니다.배달가능한 치킨집은";
                     myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
 
                     for(String n : names){
                         myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
                     }
+                    String text2 = "입니다. 원하시는 가게이름을 말해주세요.";
+                    myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
                 }
             });
 
-            String place;
             Intent get = getIntent();
             place = get.getStringExtra("place");
             if(place == null){
@@ -104,33 +107,6 @@ public class Chicken extends AppCompatActivity {
 
 
         }
-
-        private void speak() {
-            //intent to show speech to text dialog 텍스트 대화 상자에 음성 표시
-            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-
-
-            //start intent 인텐트 시작
-            try {
-                //in there was no error
-                //show dialog
-                startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
-
-            } catch (Exception e) {
-                //if there was some error
-                //get message of error and show
-                Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-
-            }
-
-        }
-
-
-
-
 
     private class GetData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
@@ -217,38 +193,6 @@ public class Chicken extends AppCompatActivity {
         }
 
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-
-        switch (requestCode) {
-            case REQUEST_CODE_SPEECH_INPUT: {
-                if (resultCode == RESULT_OK && null != data) {
-                    //get text array from voice intent 음성 인텐트에서 텍스트 배열 가져오기
-                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    //set to text view 텍스트 보기로 설정
-                    for(String n : names){
-                        if(result.get(0).equals(n)){
-                            Intent i = new Intent(Chicken.this,Menu.class);
-                            i.putExtra("shop", shops.get(n));
-                            startActivity(i);
-                        }
-                    }
-                    if(result.get(0).equals("뒤로")){
-                        Intent i = new Intent(Chicken.this, MainActivity.class);
-                        startActivity(i);
-                    }
-                    break;
-                }
-            }
-
-
-        }
-
-
-    }
-
 
     private void showResult(){
         try {
@@ -271,10 +215,13 @@ public class Chicken extends AppCompatActivity {
                 hashMap.put(TAG_ID, num.toString());
                 hashMap.put(TAG_NAME, name);
                 hashMap.put(TAG_ADDRESS, address);
-                shops.put(name, shop);
+
 
                 mArrayList.add(hashMap);
                 names.add(name);
+
+                shops.put(name, shop);
+                shopnames.put(shop, name);
 
             }
 
@@ -293,6 +240,92 @@ public class Chicken extends AppCompatActivity {
 
     }
 
+    private void speak() {
+        //intent to show speech to text dialog 텍스트 대화 상자에 음성 표시
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+
+
+        //start intent 인텐트 시작
+        try {
+            //in there was no error
+            //show dialog
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+
+        } catch (Exception e) {
+            //if there was some error
+            //get message of error and show
+            Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        switch (requestCode) {
+            case REQUEST_CODE_SPEECH_INPUT: {
+                if (resultCode == RESULT_OK && null != data) {
+                    //get text array from voice intent 음성 인텐트에서 텍스트 배열 가져오기
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    //set to text view 텍스트 보기로 설정
+                    for(String n : names){
+                        if(result.get(0).equals(n)){
+                            Intent i = new Intent(Chicken.this,Menu.class);
+                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("shop", shops.get(n));
+                            i.putExtra("shopname", shopnames.get(shops.get(n)));
+                            i.putExtra("flag_from_chicken", "y");
+                            startActivity(i);
+                        }
+                    }
+                    if(result.get(0).equals("뒤로")){
+                        Intent i = new Intent(Chicken.this, MainActivity.class);
+                        startActivity(i);
+                    }
+                    else if(result.get(0).equals("다시")){
+                        String Text = "치킨 카테고리입니다.배달가능한 치킨집은";
+                        myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
+
+                        for(String n : names){
+                            myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
+                        }
+                        String text2 = "입니다. 원하시는 가게이름을 말해주세요.";
+                        myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+
+                        String text3 = "다시듣기는 다시,  메인메뉴로 돌아가기는 뒤로 입니다.";
+                        myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
+                    }
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mVoiceBtn.performClick();
+                        }
+                    }, 1000);
+
+                    break;
+                }else{
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mVoiceBtn.performClick();
+                        }
+                    }, 1000);
+                }
+            }
+
+
+        }
+
+
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -301,5 +334,7 @@ public class Chicken extends AppCompatActivity {
             myTTS.shutdown();
         }
     }
+
+
 
 }

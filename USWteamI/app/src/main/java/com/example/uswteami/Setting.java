@@ -79,7 +79,11 @@ public class Setting extends AppCompatActivity implements OnInitListener {
     @Override
     public void onInit(int status) {
         String myText1 = "설정입니다.";
+        String text3 = "설정을 완료하신후, 저장을 원하시면 저장 을 말해주세요.";
+        String text2 = "매장 나열 방식의 교체를 원하시면 매장 을 말해주세요.";
         myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
+        myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+        myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
     }
 
 
@@ -93,9 +97,9 @@ public class Setting extends AppCompatActivity implements OnInitListener {
 
                 case R.id.placeLayoutChange:
 
-                    if(placeLayout.getText().toString().equals("거리순")) placeLayout.setText("별점순");
+                    if(placeLayout.getText().toString().equals("앱 지정순")) placeLayout.setText("리뷰 많은 순");
 
-                    else placeLayout.setText("거리순");
+                    else placeLayout.setText("앱 지정순");
 
                     break;
 
@@ -221,16 +225,19 @@ public class Setting extends AppCompatActivity implements OnInitListener {
 
         if(text.equals(bs.get(0).getText().toString())){
 
-             if(placeLayout.getText().toString().equals("거리순")){
-                placeLayout.setText("별점순");
-                String myText2 = "별점순입니다.";
+             if(placeLayout.getText().toString().equals("앱 지정순")){
+                placeLayout.setText("리뷰 많은 순");
+                String myText2 = "현재 매장 나열 방식은" + placeLayout.getText().toString() + "입니다.";
                 myTTS.speak(myText2, TextToSpeech.QUEUE_FLUSH, null);
             }
             else {
-                placeLayout.setText("거리순");
-                String myText3 = "거리순입니다.";
+                placeLayout.setText("리뷰 많은 순");
+                String myText3 = "현재 매장 나열 방식은" + placeLayout.getText().toString() + "입니다.";
                 myTTS.speak(myText3, TextToSpeech.QUEUE_FLUSH, null);
             }
+
+            String textOut = "현재 설정의 저장을 원하시면 저장, 원하시지 않으면 뒤로 를 말해주세요.";
+            myTTS.speak(textOut, TextToSpeech.QUEUE_FLUSH, null);
 
             new Handler().postDelayed(new Runnable() {
 

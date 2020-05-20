@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
 
-    private String place = " 별점순";
+    private String place = "앱 지정순";
     private static Integer n = 0;
 
     //views from activity
@@ -74,8 +74,9 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     @Override
     public void onInit(int status) {
         String myText1 = "음성인식 배달 앱 입니다.";
-        String myText2 = "설정을 원하시면 설정을 말하고, 주문을 원하시면 카테고리에서 메뉴를 골라주세요.";
-        String myText3 = "카테고리에는 치킨, 피자, 중식, 분식, 한식, 야식이 있습니다.";
+        String myText2 = "설정을 원하시면 설정, 주문을 원하시면 주문을 말씀해주세요";
+        String myText3 = "처음 사용하시는 경우, 설 명  을 말씀해주세요.";
+
         myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
         myTTS.speak(myText2, TextToSpeech.QUEUE_ADD, null);
         myTTS.speak(myText3, TextToSpeech.QUEUE_ADD, null);
@@ -142,8 +143,33 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
                     //set to text view 텍스트 보기로 설정
                     mTextTv.setText(result.get(0));
                     btsClick(result.get(0));
-                    if (result.get(0).equals("다시 듣기")) {
+                    if (result.get(0).equals("다시")) {
                         onInit(0);
+                    }
+                    else if (result.get(0).equals("주문")){
+                        String order1 = "주문을 원하시면 카테고리에서 메뉴를 말씀해주세요.";
+                        String order2 = "주문 카테고리에는 치킨이 있습니다.";
+                        String order3 = "한번 더 듣기를 원하시면 '주문다시'라고 말씀해주세요";
+
+                        myTTS.speak(order1, TextToSpeech.QUEUE_FLUSH, null);
+                        myTTS.speak(order2, TextToSpeech.QUEUE_ADD, null);
+                        myTTS.speak(order3, TextToSpeech.QUEUE_ADD, null);
+
+                    }
+                    else if (result.get(0).equals("주문-")){
+                        String order1 = "주문을 원하시면 카테고리에서 메뉴를 말씀해주세요.";
+                        String order2 = "주문 카테고리에는 치킨이 있습니다.";
+                        String order3 = "한번 더 듣기를 원하시면 '주문다시'라고 말씀해주세요";
+
+                        myTTS.speak(order1, TextToSpeech.QUEUE_FLUSH, null);
+                        myTTS.speak(order2, TextToSpeech.QUEUE_ADD, null);
+                        myTTS.speak(order3, TextToSpeech.QUEUE_ADD, null);
+                    }else if(result.get(0).equals("설명")){
+                        String t1 = "해당 음성인식 배달 앱은, 카테고리를 넘어갈때마다 항상 뒤로 와 다시 명령어가 존재합니다.";
+                        String t2 = "뒤로 를 말하시면 이전 카테고리로, 다시 를 말하시면 설명이 한번 더 나오게 됩니다.";
+
+                        myTTS.speak(t1, TextToSpeech.QUEUE_ADD, null);
+                        myTTS.speak(t2, TextToSpeech.QUEUE_ADD, null);
                     }
                     break;
                 }

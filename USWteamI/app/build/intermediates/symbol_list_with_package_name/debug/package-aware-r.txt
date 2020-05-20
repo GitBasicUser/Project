@@ -810,9 +810,11 @@ id on
 id packed
 id parent
 id parentPanel
+id payment
 id percent
 id placeLayout
 id placeLayoutChange
+id price
 id progress_circular
 id progress_horizontal
 id radio
@@ -932,6 +934,7 @@ layout notification_template_custom_big
 layout notification_template_icon_group
 layout notification_template_part_chronometer
 layout notification_template_part_time
+layout payment_layout
 layout select_dialog_item_material
 layout select_dialog_multichoice_material
 layout select_dialog_singlechoice_material
