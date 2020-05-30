@@ -71,23 +71,23 @@ public class Chicken extends AppCompatActivity {
             myTTS = new TextToSpeech(this, new OnInitListener() {
                 @Override
                 public void onInit(int status) {
-                    String Text = "치킨 카테고리입니다.배달가능한 치킨집은";
+                    String Text = "치킨 카테고리입니다.메인메뉴로 돌아가시려면 뒤로 를 말해주세요.배달가능한 치킨집은";
                     myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
 
                     for(String n : names){
+                        myTTS.setSpeechRate(0.95f);
                         myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
                     }
-                    String text2 = "입니다. 원하시는 가게이름을 말해주세요.";
+
+                    myTTS.setSpeechRate(1f);
+                    String text2 = "입니다. 원하시는 가게이름 을 말해주세요.다시듣기는 다시, 메인메뉴로 돌아가기는 뒤로 입니다.";
                     myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
                 }
             });
 
             Intent get = getIntent();
-            place = get.getStringExtra("place");
-            if(place == null){
-                Log.v("p: ","null");
-            }else {
-                Log.v("p: ", place);
+            if(get.getStringExtra("flag_from_main").equals("y")) {
+                place = get.getStringExtra("place");
                 place_layout.setText(place);
             }
 
@@ -198,6 +198,24 @@ public class Chicken extends AppCompatActivity {
         try {
             JSONObject jsonObject = new JSONObject(mJsonString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+            ArrayList<String> commant = new ArrayList<>();
+            int k = 1;
+
+            if(place.equals("리뷰 많은 순")) {
+                for(int i=0;i<jsonArray.length();i++) {
+                    JSONObject item = jsonArray.getJSONObject(i);
+                    commant.add(item.getString("hit"));
+                }
+                for(int i = 0; i<commant.size(); i++){
+                    for(int j = 0; j<commant.size() - 1; j++){
+                        if(Integer.parseInt(commant.get(j)) <= Integer.parseInt(commant.get(j + 1))){
+                            String tmp = commant.get(j);
+                            commant.set(j, commant.get(j+1));
+                            commant.set(j+1, tmp);
+                        }
+                    }
+                }
+            }
 
             for(int i=0;i<jsonArray.length();i++){
 
@@ -207,22 +225,45 @@ public class Chicken extends AppCompatActivity {
                 String name = item.getString("가게이름");
                 String address = item.getString("주소");
                 String shop = item.getString("nickname");
+                String hit = item.getString("hit");
+                Integer a = commant.size();
+                Log.d("commnatSize: ", a.toString());
 
+                if(place.equals("리뷰 많은 순")) {
+                    if ( (commant.size() != 0) && (commant.get(0).equals(hit)) ) {
+                        Integer numb = k;
 
+                        boolean f = true;
+                        HashMap<String, String> hashMap = new HashMap<>();
+                        hashMap.put(TAG_ID, numb.toString());
+                        hashMap.put(TAG_NAME, name);
+                        hashMap.put(TAG_ADDRESS, address);
 
-                HashMap<String,String> hashMap = new HashMap<>();
+                        for(String n : names){
+                            if(n.equals(name)) f = false;
+                        }
+                        if(f) {
+                            mArrayList.add(hashMap);
+                            names.add(name);
+                            shops.put(name, shop);
+                            shopnames.put(shop, name);
 
-                hashMap.put(TAG_ID, num.toString());
-                hashMap.put(TAG_NAME, name);
-                hashMap.put(TAG_ADDRESS, address);
+                            k++;
+                            i = -1;
+                            commant.remove(0);
+                        }else continue;
+                    }
+                }else {
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.put(TAG_ID, num.toString());
+                    hashMap.put(TAG_NAME, name);
+                    hashMap.put(TAG_ADDRESS, address);
 
-
-                mArrayList.add(hashMap);
-                names.add(name);
-
-                shops.put(name, shop);
-                shopnames.put(shop, name);
-
+                    mArrayList.add(hashMap);
+                    names.add(name);
+                    shops.put(name, shop);
+                    shopnames.put(shop, name);
+                }
             }
 
             ListAdapter adapter = new SimpleAdapter(
@@ -286,9 +327,10 @@ public class Chicken extends AppCompatActivity {
                     }
                     if(result.get(0).equals("뒤로")){
                         Intent i = new Intent(Chicken.this, MainActivity.class);
+                        i.putExtra("place", place);
                         startActivity(i);
                     }
-                    else if(result.get(0).equals("다시")){
+                    else if(result.get(0).equals("다시") || result.get(0).equals("-")){
                         String Text = "치킨 카테고리입니다.배달가능한 치킨집은";
                         myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
 

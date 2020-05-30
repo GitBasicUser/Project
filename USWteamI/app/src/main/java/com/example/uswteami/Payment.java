@@ -41,6 +41,7 @@ public class Payment extends AppCompatActivity {
 
     ArrayList<HashMap<String, String>> mArrayList = new ArrayList<>();
     ListView payment;
+    int f = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,14 +63,21 @@ public class Payment extends AppCompatActivity {
                 myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
 
                 if(menu_name.equals("장바구니")){
-                    String text2 = "결제를 하시려면 결제, 메뉴확인은 확인 을 말해주세요.";
-                    myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+                    if (pay_name == null) {
+                        String t = "현재 장바구니에는";
+                        myTTS.speak(t + "메뉴가 없습니다.주문 카테고리 이동은 뒤로 입니다.", TextToSpeech.QUEUE_ADD, null);
+                    }else {
+                        String text2 = "결제를 하시려면 결제, 메뉴확인은 확인 을 말해주세요.";
+                        myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+                    }
                 }else {
                     String text2 = "장바구니에 저장을 원하시면 저장, ";
-                    String text3 = "메뉴의 설명을 들으시려면 설 명 , 가격을 확인하시려면 금액 을 말해주세요.";
+                    String text3 = "메뉴의 설명을 들으시려면 설 명 , 가격을 확인하시려면 가격 을 말해주세요.";
+                    String text4 = "메뉴 카테고리 이동은 뒤로 입니다.";
 
                     myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
                     myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
+                    myTTS.speak(text4, TextToSpeech.QUEUE_ADD, null);
                 }
             }
         });
@@ -93,37 +101,31 @@ public class Payment extends AppCompatActivity {
 
     private void showResult(String text){
         if(text.equals("장바구니")) {
-            if (pay_name == null) {
-                String t = "현재 장바구니에는";
-                myTTS.speak(t + "메뉴가 없습니다.주문 카테고리 이동은 뒤로 입니다.", TextToSpeech.QUEUE_ADD, null);
-            } else {
 
+
+            if(f == 0) {
                 Intent g = getIntent();
                 pay_name = (ArrayList<String>) g.getSerializableExtra("pay_name");
                 pay_price = (ArrayList<String>) g.getSerializableExtra("pay_price");
                 pay_content = (ArrayList<String>) g.getSerializableExtra("pay_content");
-
-
-
-                for (int i = 0; i < pay_name.size(); i++) {
-
-                    HashMap<String, String> hashMap = new HashMap<>();
-
-                    hashMap.put("pay_name", pay_name.get(i));
-                    hashMap.put("pay_price", pay_price.get(i));
-                    hashMap.put("pay_content", pay_content.get(i));
-
-                    mArrayList.add(hashMap);
-                }
-
-                ListAdapter adapter = new SimpleAdapter(
-                        Payment.this, mArrayList, R.layout.item_list,
-                        new String[]{"pay_name", "pay_price", "pay_content"},
-                        new int[]{R.id.num, R.id.name, R.id.address}
-                );
-
-                payment.setAdapter(adapter);
             }
+
+            for (int i = 0; i < pay_name.size(); i++) {
+
+                HashMap<String, String> hashMap = new HashMap<>();
+
+                hashMap.put("pay_name", pay_name.get(i));
+                hashMap.put("pay_price", pay_price.get(i));
+                hashMap.put("pay_content", pay_content.get(i));
+
+                mArrayList.add(hashMap);
+            }
+
+            ListAdapter adapter = new SimpleAdapter(Payment.this, mArrayList, R.layout.item_list,
+                    new String[]{"pay_name", "pay_price", "pay_content"},
+                    new int[]{R.id.num, R.id.name, R.id.address});
+            payment.setAdapter(adapter);
+
         }else{
             Intent get = getIntent();
             menu_price = get.getStringExtra("price");
@@ -180,12 +182,13 @@ public class Payment extends AppCompatActivity {
                     //set to text view 텍스트 보기로 설정
 
                     String res = result.get(0).replace(" ", "");
-                    int k = 0;
+                    int k = -1;
 
                     if(menu_name.equals("장바구니")){
                         if(res.equals("뒤로")){
                             Intent i = new Intent(Payment.this, Menu.class);
                             i.putExtra("flag_from_chicken", "no");
+                            i.putExtra("flag_delete", "y");
                             i.putExtra("name", "no");
                             startActivity(i);
                         }else if(res.equals("확인")){
@@ -204,7 +207,7 @@ public class Payment extends AppCompatActivity {
                                 Integer p = pay;
                                 myTTS.speak("의 " + c.toString() + " 개가 있으며, .", TextToSpeech.QUEUE_ADD, null);
                                 myTTS.speak("총합 " + p.toString() + " 원 입니다.", TextToSpeech.QUEUE_ADD, null);
-                                myTTS.speak("장바구니 수정을 원하시면, 수정 을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
+                                myTTS.speak("삭제할 메뉴가 있으시다면, 메뉴의 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
                             }
                         }else if(res.equals("결재") || res.equals("결제")){
                             if(pay_name.size() == 0){
@@ -234,40 +237,64 @@ public class Payment extends AppCompatActivity {
                                 myTTS.speak("가 있습니다.삭제를 원하시는 메뉴의 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
                             }
                         }else if(res.equals("결제승인") || res.equals("결재승인")){
-                            myTTS.speak("결제가 완료 되었습니다. 애플리케이션을 종료 합니다.", TextToSpeech.QUEUE_ADD, null);
+                            myTTS.speak("결제가 정상적으로 완료 되었 습니다.", TextToSpeech.QUEUE_ADD, null);
                             //android.os.Process.killProcess(android.os.Process.myPid());
-                            System.exit(0);
+                            //System.exit(1);
                         }
                         for(String n : pay_name){
+                            k++;
                             if(res.equals(n)) {
+                                f++;
                                 myTTS.speak(n + " 메뉴 가 장바구니 에서 삭제 되었습니다.", TextToSpeech.QUEUE_ADD, null);
                                 pay_name.remove(k);
                                 pay_content.remove(k);
                                 pay_price.remove(k);
                                 mArrayList.remove(k);
+                                k = -1;
+                                myTTS.speak("결제를 하시려면 결제, 치킨 카테고리 이동은 뒤로 입니다. ", TextToSpeech.QUEUE_ADD, null);
+                                showResult("장바구니");
+                                break;
                             }
-                            k++;
                         }
+
                     }else {
                         if (res.equals("뒤로")) {
-                            Intent i = new Intent(Payment.this, Menu.class);
-                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-                            i.putExtra("flag_from_chicken", "no");
-                            i.putExtra("name", "no");
-                            startActivity(i);
+                            if(f != 0){
+                                Intent i = new Intent(Payment.this, Menu.class);
+                                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.putExtra("flag_from_chicken", "no");
+                                i.putExtra("name", "no");
+                                i.putExtra("flag_delete", "y");
+                                i.putExtra("a", "aaa");
+                                i.putExtra("pay_name", pay_name);
+                                i.putExtra("pay_price", pay_price);
+                                i.putExtra("pay_content", pay_content);
+                                startActivity(i);
+                            }else {
+                                Intent i = new Intent(Payment.this, Menu.class);
+                                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.putExtra("flag_from_chicken", "no");
+                                i.putExtra("flag_delete", "n");
+                                i.putExtra("name", "no");
+                                startActivity(i);
+                            }
                         } else if (res.equals("저장")) {
+                            //for(int i = 0; i<1; i++){
+                                //myTTS.speak(menu_name + " 메뉴 가 장바구니에 저장 되었 습니다.", TextToSpeech.QUEUE_ADD, null);
+                           // }
                             Intent i = new Intent(Payment.this, Menu.class);
                             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                             i.putExtra("flag_from_chicken", "no");
+                            i.putExtra("flag_delete", "n");
                             i.putExtra("name", menu_name);
                             i.putExtra("price", menu_price);
                             i.putExtra("content", menu_content);
                             startActivity(i);
                         } else if (res.equals("설명")) {
-                            String text = menu_name + " 은 " + menu_content;
+                            String text = menu_name + " 메뉴 는  " + menu_content;
                             myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
-                        } else if (res.equals("금액")) {
-                            String text = menu_name + " 은 " + menu_price + " 원 입니다.";
+                        } else if (res.equals("가격")) {
+                            String text = menu_name + " 메뉴 의 가격 은    " + menu_price + "    원 입니다.";
                             myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
                         }
                     }
