@@ -64,6 +64,8 @@ public class Chicken extends AppCompatActivity {
         mlistView = (ListView) findViewById(R.id.listView_main_list);
         mArrayList = new ArrayList<>();
         mVoiceBtn = (ImageButton)findViewById(R.id.voiceBtn);
+        
+        final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
         GetData task = new GetData();
         task.execute("http://uswteami.dothome.co.kr/my/board/chicken/json.php");
@@ -94,6 +96,7 @@ public class Chicken extends AppCompatActivity {
             mVoiceBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    player_s.start();
                     speak();
                 }
             });
@@ -307,6 +310,10 @@ public class Chicken extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        
+        final MediaPlayer player_f = MediaPlayer.create(this, R.raw.finish);
+
+        player_f.start();
 
 
         switch (requestCode) {
