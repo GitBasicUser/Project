@@ -51,6 +51,8 @@ public class Setting extends AppCompatActivity implements OnInitListener {
         bs.add(save);
 
         myTTS = new TextToSpeech(this, this);
+        
+        final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
         text = (TextView)findViewById(R.id.text);
         placeLayout = (TextView)findViewById(R.id.placeLayout);
@@ -63,6 +65,7 @@ public class Setting extends AppCompatActivity implements OnInitListener {
         mVoiceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                player_s.start();
                 speak();
             }
         });
@@ -188,6 +191,10 @@ public class Setting extends AppCompatActivity implements OnInitListener {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
+        
+        final MediaPlayer player_f = MediaPlayer.create(this, R.raw.finish);
+
+        player_f.start();
 
 
 
