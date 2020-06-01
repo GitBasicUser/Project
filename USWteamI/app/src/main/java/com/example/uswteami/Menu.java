@@ -2,6 +2,7 @@ package com.example.uswteami;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -688,9 +689,6 @@ public class Menu extends AppCompatActivity {
                         myTTS.speak("가 있습니다.다시들으시려면 음료다시, 주문하시려면 원하는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
 
                     }else if(res.equals("구매")){
-                        if(pay_name == null) {
-                            myTTS.speak("현재 장바구니가 비어 있습니다.메뉴를 먼저 선택해주세요.", TextToSpeech.QUEUE_ADD, null);
-                        }
                         Intent i = new Intent(Menu.this, Payment.class);
                         i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                         i.putExtra("name", "장바구니");

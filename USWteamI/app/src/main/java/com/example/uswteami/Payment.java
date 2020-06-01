@@ -1,6 +1,7 @@
 package com.example.uswteami;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
@@ -193,11 +194,24 @@ public class Payment extends AppCompatActivity {
 
                     if(menu_name.equals("장바구니")){
                         if(res.equals("뒤로")){
-                            Intent i = new Intent(Payment.this, Menu.class);
-                            i.putExtra("flag_from_chicken", "no");
-                            i.putExtra("flag_delete", "y");
-                            i.putExtra("name", "no");
-                            startActivity(i);
+                            if(f != 0){
+                                Intent i = new Intent(Payment.this, Menu.class);
+                                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.putExtra("flag_from_chicken", "no");
+                                i.putExtra("name", "no");
+                                i.putExtra("flag_delete", "y");
+                                i.putExtra("pay_name", pay_name);
+                                i.putExtra("pay_price", pay_price);
+                                i.putExtra("pay_content", pay_content);
+                                startActivity(i);
+                            }else {
+                                Intent i = new Intent(Payment.this, Menu.class);
+                                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.putExtra("flag_from_chicken", "no");
+                                i.putExtra("flag_delete", "n");
+                                i.putExtra("name", "no");
+                                startActivity(i);
+                            }
                         }else if(res.equals("확인")){
                             int cnt = 0, pay = 0;
                             String text = "현재 장바구니에는";

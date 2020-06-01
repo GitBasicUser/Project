@@ -8,6 +8,10 @@
         "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher_round.png"
     },
     {
+        "merged": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\build\\intermediates\\res\\merged\\debug\\raw_finish.mp3.flat",
+        "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\raw\\finish.mp3"
+    },
+    {
         "merged": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher_round.png.flat",
         "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_round.png"
     },
@@ -30,6 +34,10 @@
     {
         "merged": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\build\\intermediates\\res\\merged\\debug\\layout_item_list.xml.flat",
         "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\layout\\item_list.xml"
+    },
+    {
+        "merged": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\build\\intermediates\\res\\merged\\debug\\raw_start.mp3.flat",
+        "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\raw\\start.mp3"
     },
     {
         "merged": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher_round.png.flat",
