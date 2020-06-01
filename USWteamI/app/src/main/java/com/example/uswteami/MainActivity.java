@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         settingBtn = findViewById(R.id.settingBtn);
         chicken = findViewById(R.id.btn_chicken);
         test = (TextView) findViewById(R.id.testText);
+        
+        final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
         Log.d("n: ", n.toString());
         //settingBtn.setOnClickListener(onClick);
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         mVoiceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                player_s.start();
                 speak();
             }
         });
@@ -135,6 +138,10 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        
+        final MediaPlayer player_f = MediaPlayer.create(this, R.raw.finish);
+
+        player_f.start();
 
 
         switch (requestCode) {

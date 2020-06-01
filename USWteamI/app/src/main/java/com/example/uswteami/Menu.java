@@ -95,6 +95,8 @@ public class Menu extends AppCompatActivity {
         setContentView(R.layout.menu_layout);
 
         mVoiceBtn = (ImageButton)findViewById(R.id.voiceBtn);
+        
+        final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
 
         Intent get = getIntent();
@@ -170,6 +172,7 @@ public class Menu extends AppCompatActivity {
         mVoiceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                player_s.start();
                 speak();
             }
         });
@@ -607,6 +610,10 @@ public class Menu extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        
+        final MediaPlayer player_f = MediaPlayer.create(this, R.raw.finish);
+
+        player_f.start();
 
 
         switch (requestCode) {
