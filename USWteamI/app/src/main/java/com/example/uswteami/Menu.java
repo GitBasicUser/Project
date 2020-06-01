@@ -695,6 +695,7 @@ public class Menu extends AppCompatActivity {
                     }else if(res.equals("뒤로")){
                         Intent i = new Intent(Menu.this, Chicken.class);
                         i.putExtra("flag_from_main", "n");
+                        i.putExtra("shop", "n");
                         startActivity(i);
                     }
                     else {

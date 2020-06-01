@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
                     }
                     else if (result.get(0).equals("주문")){
                         String order1 = "주문을 원하시면 카테고리에서 메뉴를 말씀해주세요.";
-                        String order2 = "주문 카테고리에는 치킨이 있습니다.";
+                        String order2 = "주문 카테고리에는 치킨, 피자 가 있습니다.";
                         String order3 = "한번 더 듣기를 원하시면 '주문다시'라고 말씀해주세요";
 
                         myTTS.speak(order1, TextToSpeech.QUEUE_FLUSH, null);
@@ -160,12 +160,14 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
                     }
                     else if (result.get(0).equals("주문-")){
                         String order1 = "주문을 원하시면 카테고리에서 메뉴를 말씀해주세요.";
-                        String order2 = "주문 카테고리에는 치킨이 있습니다.";
-                        String order3 = "한번 더 듣기를 원하시면 '주문다시'라고 말씀해주세요";
+                        String order2 = "주문 카테고리에는";
+                        String order3 = "치킨, 피자 가 있습니다.";
+                        String order4 = "한번 더 듣기를 원하시면 '주문다시'라고 말씀해주세요";
 
                         myTTS.speak(order1, TextToSpeech.QUEUE_FLUSH, null);
                         myTTS.speak(order2, TextToSpeech.QUEUE_ADD, null);
                         myTTS.speak(order3, TextToSpeech.QUEUE_ADD, null);
+                        myTTS.speak(order4, TextToSpeech.QUEUE_ADD, null);
                     }
                     break;
                 }
@@ -185,15 +187,16 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         }
 
     private void btsClick (String text){
-        if (text.equals(settingBtn.getText().toString())) {
+        if (text.equals("설정")) {
             n++;
             Intent i = new Intent(MainActivity.this, Setting.class);
             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
             i.putExtra("place", place);
             startActivity(i);
-        } else if (text.equals(chicken.getText().toString())) {
+        } else if (text.equals("치킨") || text.equals("피자")) {
             Intent j = new Intent(MainActivity.this, Chicken.class);
             j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
+            j.putExtra("shop", text);
             j.putExtra("flag_from_main", "y");
             j.putExtra("place", place);
             startActivity(j);

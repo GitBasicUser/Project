@@ -54,6 +54,7 @@ public class Chicken extends AppCompatActivity {
     ListView mlistView;
 
     private static String place;
+    private String sh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +67,28 @@ public class Chicken extends AppCompatActivity {
         mVoiceBtn = (ImageButton)findViewById(R.id.voiceBtn);
 
         GetData task = new GetData();
-        task.execute("http://uswteami.dothome.co.kr/my/board/chicken/json.php");
 
+        Intent get = getIntent();
+        if(get.getStringExtra("flag_from_main").equals("y")) {
+            place = get.getStringExtra("place");
+            place_layout.setText(place);
+        }
+        if(!get.getStringExtra("shop").equals("n")){
+            sh = get.getStringExtra("shop");
+            switch(sh){
+                case "치킨":
+                    task.execute("http://uswteami.dothome.co.kr/my/board/chicken/json.php");
+                    break;
+                case "피자":
+                    task.execute("http://uswteami.dothome.co.kr/my/board/pizza/json.php");
+                    break;
+
+            }
+        }
             myTTS = new TextToSpeech(this, new OnInitListener() {
                 @Override
                 public void onInit(int status) {
-                    String Text = "치킨 카테고리입니다.메인메뉴로 돌아가시려면 뒤로 를 말해주세요.배달가능한 치킨집은";
+                    String Text = sh + " 카테고리입니다.메인메뉴로 돌아가시려면 뒤로 를 말해주세요.배달가능한 " + sh + " 집은";
                     myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
 
                     for(String n : names){
@@ -84,12 +101,6 @@ public class Chicken extends AppCompatActivity {
                     myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
                 }
             });
-
-            Intent get = getIntent();
-            if(get.getStringExtra("flag_from_main").equals("y")) {
-                place = get.getStringExtra("place");
-                place_layout.setText(place);
-            }
 
             mVoiceBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -331,7 +342,7 @@ public class Chicken extends AppCompatActivity {
                         startActivity(i);
                     }
                     else if(result.get(0).equals("다시") || result.get(0).equals("-")){
-                        String Text = "치킨 카테고리입니다.배달가능한 치킨집은";
+                        String Text = sh + " 카테고리입니다.배달가능한 " + sh + "집은";
                         myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
 
                         for(String n : names){
