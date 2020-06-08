@@ -37,7 +37,7 @@ import java.util.Locale;
 
 public class Menu extends AppCompatActivity {
 
-    // stt, tts 변수
+     // stt, tts 변수
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
     private TextToSpeech myTTS;
     private ImageButton mVoiceBtn;
@@ -53,6 +53,7 @@ public class Menu extends AppCompatActivity {
     private static String shop;
     private static String shopname;
     private String flag_from_chicken;
+    private String sh;
 
     // Intent로 받아오는 변수(Menu.java로부터)
     private static ArrayList<String> pay_name = new ArrayList<>();
@@ -86,6 +87,7 @@ public class Menu extends AppCompatActivity {
     HashMap<String, String> content_side = new HashMap<>();
     HashMap<String, String> content_soda = new HashMap<>();
 
+    private int a=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,7 @@ public class Menu extends AppCompatActivity {
         if(flag_from_chicken.equals("y")) {
             shop = get.getStringExtra("shop");
             shopname = get.getStringExtra("shopname");
+            sh = get.getStringExtra("a");
         }
 
 
@@ -625,6 +628,46 @@ public class Menu extends AppCompatActivity {
                     //set to text view 텍스트 보기로 설정
                     String  res = result.get(0).replace(" ", "");
 
+                    for (String n : names_main) {
+                        if (res.equals(n)){
+                            a=1;
+                            Intent i = new Intent(Menu.this, Payment.class);
+                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("name", n);
+                            i.putExtra("price", price_main.get(n));
+                            i.putExtra("content", content_main.get(n));
+                            flag++;
+                            startActivity(i);
+                        }
+                    }
+
+                    for (String n : names_side) {
+                        if (res.equals(n)){
+                            a=1;
+                            Intent i = new Intent(Menu.this, Payment.class);
+                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("name", n);
+                            i.putExtra("price", price_side.get(n));
+                            i.putExtra("content", content_side.get(n));
+                            flag++;
+                            startActivity(i);
+                        }
+                    }
+
+                    for (String n : names_soda) {
+                        if (res.equals(n)){
+                            a=1;
+                            Intent i = new Intent(Menu.this, Payment.class);
+                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("name", n);
+                            i.putExtra("price", price_soda.get(n));
+                            i.putExtra("content", content_soda.get(n));
+                            flag++;
+                            startActivity(i);
+                        }
+                    }
+                    if (a==1) break;
+
                     if(res.equals("메인")){
                         String text1 = "메인메뉴에는";
                         myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
@@ -689,6 +732,7 @@ public class Menu extends AppCompatActivity {
                         myTTS.speak("가 있습니다.다시들으시려면 음료다시, 주문하시려면 원하는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
 
                     }else if(res.equals("구매")){
+                        a=1;
                         Intent i = new Intent(Menu.this, Payment.class);
                         i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                         i.putExtra("name", "장바구니");
@@ -697,49 +741,24 @@ public class Menu extends AppCompatActivity {
                         i.putExtra("pay_content", pay_content);
 
                         startActivity(i);
+                        if(a==1) break;
                     }else if(res.equals("뒤로")){
+                        a=1;
                         Intent i = new Intent(Menu.this, Chicken.class);
                         i.putExtra("flag_from_main", "n");
-                        i.putExtra("shop", "n");
+                        i.putExtra("shop",sh);
                         startActivity(i);
+                        if(a==1) break;
                     }
-                    else {
-                        for (String n : names_main) {
-                            if (res.equals(n)){
-                                Intent i = new Intent(Menu.this, Payment.class);
-                                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-                                i.putExtra("name", n);
-                                i.putExtra("price", price_main.get(n));
-                                i.putExtra("content", content_main.get(n));
-                                flag++;
-                                startActivity(i);
-                            }
-                        }
 
-                        for (String n : names_side) {
-                            if (res.equals(n)){
-                                Intent i = new Intent(Menu.this, Payment.class);
-                                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-                                i.putExtra("name", n);
-                                i.putExtra("price", price_side.get(n));
-                                i.putExtra("content", content_side.get(n));
-                                flag++;
-                                startActivity(i);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
                             }
-                        }
+                        }, 1000);
 
-                        for (String n : names_soda) {
-                            if (res.equals(n)){
-                                Intent i = new Intent(Menu.this, Payment.class);
-                                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-                                i.putExtra("name", n);
-                                i.putExtra("price", price_soda.get(n));
-                                i.putExtra("content", content_soda.get(n));
-                                flag++;
-                                startActivity(i);
-                            }
-                        }
-                    }
+
 
                     break;
                 }else{
@@ -764,6 +783,8 @@ public class Menu extends AppCompatActivity {
         if (myTTS != null){
             myTTS.stop();
             myTTS.shutdown();
+
+
         }
     }
 
