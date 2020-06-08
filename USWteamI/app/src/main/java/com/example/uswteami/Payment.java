@@ -44,6 +44,8 @@ public class Payment extends AppCompatActivity {
     ListView payment;
     int f = 0;
 
+    private int a=0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -195,6 +197,7 @@ public class Payment extends AppCompatActivity {
                     if(menu_name.equals("장바구니")){
                         if(res.equals("뒤로")){
                             if(f != 0){
+                                a=1;
                                 Intent i = new Intent(Payment.this, Menu.class);
                                 i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                                 i.putExtra("flag_from_chicken", "no");
@@ -204,13 +207,16 @@ public class Payment extends AppCompatActivity {
                                 i.putExtra("pay_price", pay_price);
                                 i.putExtra("pay_content", pay_content);
                                 startActivity(i);
+                                if(a==1) break;
                             }else {
+                                a=1;
                                 Intent i = new Intent(Payment.this, Menu.class);
                                 i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                                 i.putExtra("flag_from_chicken", "no");
                                 i.putExtra("flag_delete", "n");
                                 i.putExtra("name", "no");
                                 startActivity(i);
+                                if(a==1) break;
                             }
                         }else if(res.equals("확인")){
                             int cnt = 0, pay = 0;
@@ -262,6 +268,7 @@ public class Payment extends AppCompatActivity {
                             //android.os.Process.killProcess(android.os.Process.myPid());
                             //System.exit(1);
                         }
+
                         for(String n : pay_name){
                             k++;
                             if(res.equals(n)) {
@@ -281,6 +288,7 @@ public class Payment extends AppCompatActivity {
                     }else {
                         if (res.equals("뒤로")) {
                             if(f != 0){
+                                a=1;
                                 Intent i = new Intent(Payment.this, Menu.class);
                                 i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                                 i.putExtra("flag_from_chicken", "no");
@@ -291,18 +299,22 @@ public class Payment extends AppCompatActivity {
                                 i.putExtra("pay_price", pay_price);
                                 i.putExtra("pay_content", pay_content);
                                 startActivity(i);
+                                if(a==1) break;
                             }else {
+                                a=1;
                                 Intent i = new Intent(Payment.this, Menu.class);
                                 i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                                 i.putExtra("flag_from_chicken", "no");
                                 i.putExtra("flag_delete", "n");
                                 i.putExtra("name", "no");
                                 startActivity(i);
+                                if(a==1) break;
                             }
                         } else if (res.equals("저장")) {
                             //for(int i = 0; i<1; i++){
                                 //myTTS.speak(menu_name + " 메뉴 가 장바구니에 저장 되었 습니다.", TextToSpeech.QUEUE_ADD, null);
                            // }
+                            a=1;
                             Intent i = new Intent(Payment.this, Menu.class);
                             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                             i.putExtra("flag_from_chicken", "no");
@@ -311,6 +323,7 @@ public class Payment extends AppCompatActivity {
                             i.putExtra("price", menu_price);
                             i.putExtra("content", menu_content);
                             startActivity(i);
+                            if(a==1) break;
                         } else if (res.equals("설명")) {
                             String text = menu_name + " 메뉴 는  " + menu_content;
                             myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
@@ -318,7 +331,15 @@ public class Payment extends AppCompatActivity {
                             String text = menu_name + " 메뉴 의 가격 은    " + menu_price + "    원 입니다.";
                             myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
                         }
+
                     }
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mVoiceBtn.performClick();
+                        }
+                    }, 1000);
 
                     break;
                 }else{
@@ -346,3 +367,4 @@ public class Payment extends AppCompatActivity {
         }
     }
 }
+
