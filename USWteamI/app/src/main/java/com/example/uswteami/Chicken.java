@@ -36,7 +36,7 @@ import java.util.Locale;
 
 public class Chicken extends AppCompatActivity {
 
-    private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
+   private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
     private TextToSpeech myTTS;
     private ImageButton mVoiceBtn;
 
@@ -56,6 +56,7 @@ public class Chicken extends AppCompatActivity {
 
     private static String place;
     private String sh;
+    private int a = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -336,18 +337,23 @@ public class Chicken extends AppCompatActivity {
                     //set to text view 텍스트 보기로 설정
                     for(String n : names){
                         if(result.get(0).equals(n)){
+                            a=1;
                             Intent i = new Intent(Chicken.this,Menu.class);
                             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("a",sh);
                             i.putExtra("shop", shops.get(n));
                             i.putExtra("shopname", shopnames.get(shops.get(n)));
                             i.putExtra("flag_from_chicken", "y");
                             startActivity(i);
                         }
                     }
+                    if (a==1) break;
                     if(result.get(0).equals("뒤로")){
+                        a=1;
                         Intent i = new Intent(Chicken.this, MainActivity.class);
                         i.putExtra("place", place);
                         startActivity(i);
+                        if (a==1) break;
                     }
                     else if(result.get(0).equals("다시") || result.get(0).equals("-")){
                         String Text = sh + " 카테고리입니다.배달가능한 " + sh + "집은";
@@ -361,7 +367,22 @@ public class Chicken extends AppCompatActivity {
 
                         String text3 = "다시듣기는 다시,  메인메뉴로 돌아가기는 뒤로 입니다.";
                         myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 1000);
                     }
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 1000);
+
 
                     break;
                 }else{
@@ -388,7 +409,5 @@ public class Chicken extends AppCompatActivity {
             myTTS.shutdown();
         }
     }
-
-
 
 }
