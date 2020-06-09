@@ -1,5 +1,4 @@
 package com.example.uswteami;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -52,7 +51,7 @@ public class Setting extends AppCompatActivity implements OnInitListener {
         bs.add(save);
 
         myTTS = new TextToSpeech(this, this);
-        
+
         final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
         text = (TextView)findViewById(R.id.text);
@@ -190,7 +189,7 @@ public class Setting extends AppCompatActivity implements OnInitListener {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-        
+
         final MediaPlayer player_f = MediaPlayer.create(this, R.raw.finish);
 
         player_f.start();
@@ -231,7 +230,7 @@ public class Setting extends AppCompatActivity implements OnInitListener {
 
         if(text.equals(bs.get(0).getText().toString())){
 
-             if(placeLayout.getText().toString().equals("앱 지정순")){
+            if(placeLayout.getText().toString().equals("앱 지정순")){
                 placeLayout.setText("리뷰 많은 순");
                 String myText2 = "현재 매장 나열 방식은" + placeLayout.getText().toString() + "입니다.";
                 myTTS.setSpeechRate(0.95f);

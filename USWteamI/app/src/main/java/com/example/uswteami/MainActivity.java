@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         settingBtn = findViewById(R.id.settingBtn);
         chicken = findViewById(R.id.btn_chicken);
         test = (TextView) findViewById(R.id.testText);
-        
+
         final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
         Log.d("n: ", n.toString());
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        
+
         final MediaPlayer player_f = MediaPlayer.create(this, R.raw.finish);
 
         player_f.start();
@@ -192,14 +192,14 @@ public class MainActivity extends AppCompatActivity implements OnInitListener {
         }
     }
 
-        @Override
-        protected void onStop () {
-            super.onStop();
-            if (myTTS != null) {
-                myTTS.stop();
-                myTTS.shutdown();
-            }
+    @Override
+    protected void onStop () {
+        super.onStop();
+        if (myTTS != null) {
+            myTTS.stop();
+            myTTS.shutdown();
         }
+    }
 
     private void btsClick (String text){
         flag++;

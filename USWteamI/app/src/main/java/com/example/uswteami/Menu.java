@@ -37,7 +37,7 @@ import java.util.Locale;
 
 public class Menu extends AppCompatActivity {
 
-     // stt, tts 변수
+    // stt, tts 변수
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
     private TextToSpeech myTTS;
     private ImageButton mVoiceBtn;
@@ -724,18 +724,13 @@ public class Menu extends AppCompatActivity {
                         startActivity(i);
                         if(a==1) break;
                     }
-<<<<<<< HEAD
-=======
 
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mVoiceBtn.performClick();
-                            }
-                        }, 1000);
-
->>>>>>> e6b8137c4bd83ac949ad304d5c88a4351c964e0d
-
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mVoiceBtn.performClick();
+                        }
+                    }, 1000);
 
 
 
