@@ -299,15 +299,24 @@ public class Payment extends AppCompatActivity {
                                 if(a==1) break;
                             }
                         } else if (res.equals("저장")) {
+<<<<<<< HEAD
                             myTTS.speak(menu_name + " 메뉴 가 장바구니에 저장 되었 습니다.", TextToSpeech.QUEUE_ADD, null);
                             a=1;
                             final Intent i = new Intent(Payment.this, Menu.class);
+=======
+                            //for(int i = 0; i<1; i++){
+                                //myTTS.speak(menu_name + " 메뉴 가 장바구니에 저장 되었 습니다.", TextToSpeech.QUEUE_ADD, null);
+                           // }
+                            a=1;
+                            Intent i = new Intent(Payment.this, Menu.class);
+>>>>>>> e6b8137c4bd83ac949ad304d5c88a4351c964e0d
                             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                             i.putExtra("flag_from_chicken", "no");
                             i.putExtra("flag_delete", "n");
                             i.putExtra("name", menu_name);
                             i.putExtra("price", menu_price);
                             i.putExtra("content", menu_content);
+<<<<<<< HEAD
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -315,6 +324,9 @@ public class Payment extends AppCompatActivity {
                                 }
                             }, 1000);
 
+=======
+                            startActivity(i);
+>>>>>>> e6b8137c4bd83ac949ad304d5c88a4351c964e0d
                             if(a==1) break;
                         } else if (res.equals("설명")) {
                             String text = menu_name + " 메뉴 는  " + menu_content;
@@ -360,4 +372,9 @@ public class Payment extends AppCompatActivity {
             myTTS.shutdown();
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+
+>>>>>>> e6b8137c4bd83ac949ad304d5c88a4351c964e0d
