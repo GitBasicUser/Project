@@ -56,6 +56,7 @@ public class Chicken extends AppCompatActivity {
 
     private static String place;
     private String sh;
+    private int a = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +92,7 @@ public class Chicken extends AppCompatActivity {
             myTTS = new TextToSpeech(this, new OnInitListener() {
                 @Override
                 public void onInit(int status) {
-                    String Text = sh + " 카테고리입니다.메인메뉴로 돌아가시려면 뒤로 를 말해주세요.배달가능한 " + sh + " 집은";
+                    String Text = sh + " 카테고리입니다.배달가능한 " + sh + " 집은";
                     myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
 
                     for(String n : names){
@@ -100,7 +101,7 @@ public class Chicken extends AppCompatActivity {
                     }
 
                     myTTS.setSpeechRate(1f);
-                    String text2 = "입니다. 원하시는 가게이름 을 말해주세요.다시듣기는 다시, 메인메뉴로 돌아가기는 뒤로 입니다.";
+                    String text2 = "입니다. 원하시는 가게이름 을 말해주세요.";
                     myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
                 }
             });
@@ -336,14 +337,19 @@ public class Chicken extends AppCompatActivity {
                     //set to text view 텍스트 보기로 설정
                     for(String n : names){
                         if(result.get(0).equals(n)){
+                            a = 1;
                             Intent i = new Intent(Chicken.this,Menu.class);
                             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("a", sh);
                             i.putExtra("shop", shops.get(n));
                             i.putExtra("shopname", shopnames.get(shops.get(n)));
                             i.putExtra("flag_from_chicken", "y");
                             startActivity(i);
                         }
                     }
+
+                    if(a == 1) break;
+
                     if(result.get(0).equals("뒤로")){
                         Intent i = new Intent(Chicken.this, MainActivity.class);
                         i.putExtra("place", place);
@@ -354,22 +360,26 @@ public class Chicken extends AppCompatActivity {
                         myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
 
                         for(String n : names){
+                            myTTS.setSpeechRate(0.95f);
                             myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
                         }
                         String text2 = "입니다. 원하시는 가게이름을 말해주세요.";
                         myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
 
-                        String text3 = "다시듣기는 다시,  메인메뉴로 돌아가기는 뒤로 입니다.";
-                        myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 1000);
+                    }else{
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 1000);
                     }
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mVoiceBtn.performClick();
-                        }
-                    }, 1000);
-
                     break;
                 }else{
                     new Handler().postDelayed(new Runnable() {

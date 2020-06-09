@@ -53,6 +53,7 @@ public class Menu extends AppCompatActivity {
     private static String shop;
     private static String shopname;
     private String flag_from_chicken;
+    private String sh;
 
     // Intent로 받아오는 변수(Menu.java로부터)
     private static ArrayList<String> pay_name = new ArrayList<>();
@@ -86,6 +87,7 @@ public class Menu extends AppCompatActivity {
     HashMap<String, String> content_side = new HashMap<>();
     HashMap<String, String> content_soda = new HashMap<>();
 
+    private int a=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,7 @@ public class Menu extends AppCompatActivity {
         setContentView(R.layout.menu_layout);
 
         mVoiceBtn = (ImageButton)findViewById(R.id.voiceBtn);
-        
+
         final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
 
@@ -105,6 +107,7 @@ public class Menu extends AppCompatActivity {
         if(flag_from_chicken.equals("y")) {
             shop = get.getStringExtra("shop");
             shopname = get.getStringExtra("shopname");
+            sh = get.getStringExtra("a");
         }
 
 
@@ -152,17 +155,15 @@ public class Menu extends AppCompatActivity {
             public void onInit(int status) {
                 if(flag == 0) {
                     String text1 = shopname + " 입니다.";
-                    String text2 = "메인메뉴를 원하시면 메인, 사이드메뉴를 원하시면 사이드, 음료를 원하시면 음료를 말해주세요.";
-                    String text3 = "원하시는 메뉴의 이름을 말해 주셔도 됩니다.";
-                    String text4 = "장바구니 이동은 구매, 다시듣기는 다시, 뒤로이동은 뒤로 입니다.";
+                    String text2 = "메인메뉴는 메인, 사이드메뉴는 사이드, 음료는 음료, 또는 메뉴 이름 을 말해주세요.";
+                    String text3 = "장바구니 이동은 구매 입니다.";
 
                     myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
                     myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
                     myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
-                    myTTS.speak(text4, TextToSpeech.QUEUE_ADD, null);
                 }else{
                     String text1 = shopname + " 입니다.";
-                    String text2 = "메인, 사이드, 음료, 구매, 다시, 뒤로 중 선택해주세요.";
+                    String text2 = "명령어를 말해주세요.";
 
                     myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
                     myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
@@ -611,7 +612,7 @@ public class Menu extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        
+
         final MediaPlayer player_f = MediaPlayer.create(this, R.raw.finish);
 
         player_f.start();
@@ -625,6 +626,46 @@ public class Menu extends AppCompatActivity {
                     //set to text view 텍스트 보기로 설정
                     String  res = result.get(0).replace(" ", "");
 
+                    for (String n : names_main) {
+                        if (res.equals(n)){
+                            a=1;
+                            Intent i = new Intent(Menu.this, Payment.class);
+                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("name", n);
+                            i.putExtra("price", price_main.get(n));
+                            i.putExtra("content", content_main.get(n));
+                            flag++;
+                            startActivity(i);
+                        }
+                    }
+
+                    for (String n : names_side) {
+                        if (res.equals(n)){
+                            a=1;
+                            Intent i = new Intent(Menu.this, Payment.class);
+                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("name", n);
+                            i.putExtra("price", price_side.get(n));
+                            i.putExtra("content", content_side.get(n));
+                            flag++;
+                            startActivity(i);
+                        }
+                    }
+
+                    for (String n : names_soda) {
+                        if (res.equals(n)){
+                            a=1;
+                            Intent i = new Intent(Menu.this, Payment.class);
+                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("name", n);
+                            i.putExtra("price", price_soda.get(n));
+                            i.putExtra("content", content_soda.get(n));
+                            flag++;
+                            startActivity(i);
+                        }
+                    }
+                    if (a==1) break;
+
                     if(res.equals("메인")){
                         String text1 = "메인메뉴에는";
                         myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
@@ -633,7 +674,7 @@ public class Menu extends AppCompatActivity {
                             myTTS.speak(n + "  ", TextToSpeech.QUEUE_ADD, null);
                         }
                         myTTS.setSpeechRate(1f);
-                        myTTS.speak("가 있습니다.다시들으시려면 메인다시, 주문하시려면 원하는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
+                        myTTS.speak("가 있습니다.원하시는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
 
                     }else if(res.equals("사이드") || res.equals("싸이드")){
                         String text1 = "사이드메뉴에는";
@@ -643,7 +684,7 @@ public class Menu extends AppCompatActivity {
                             myTTS.speak(n + "  ", TextToSpeech.QUEUE_ADD, null);
                         }
                         myTTS.setSpeechRate(1f);
-                        myTTS.speak("가 있습니다.다시들으시려면 사이드다시, 주문하시려면 원하는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
+                        myTTS.speak("가 있습니다.원하시는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
 
                     }else if(res.equals("음료")){
                         String text1 = "음료에는";
@@ -653,42 +694,19 @@ public class Menu extends AppCompatActivity {
                             myTTS.speak(n + "  ", TextToSpeech.QUEUE_ADD, null);
                         }
                         myTTS.setSpeechRate(1f);
-                        myTTS.speak("가 있습니다.다시들으시려면 음료다시, 주문하시려면 원하는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
+                        myTTS.speak("가 있습니다.원하시는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
 
 
                     }else if(res.equals("다시") || res.equals("-")){
                         String text1 = shopname + " 입니다.";
-                        String text2 = "메인메뉴를 원하시면 메인, 사이드메뉴를 원하시면 사이드, 음료를 원하시면 음료를 말해주세요.";
-                        String text3 = "장바구니 이동은 구매, 다시듣기는 다시, 뒤로이동은 뒤로 입니다.";
+                        String text2 = "메인메뉴는 메인, 사이드메뉴는 사이드, 음료는 음료, 또는 메뉴 이름 을 말해주세요.";
+                        String text3 = "장바구니 이동은 구매 입니다.";
 
                         myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
                         myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
                         myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
-                    }else if(res.equals("메인다시") || res.equals("메인-")){
-                        String text1 = "메인메뉴에는";
-                        myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
-                        for(String n : names_main){
-                            myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
-                        }
-                        myTTS.speak("이 있습니다.다시들으시려면 메인다시, 주문하시려면 원하는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
-
-                    }else if(res.equals("사이드다시") || res.equals("사이드-") || res.equals("싸이드다시") || res.equals("싸이드-")){
-                        String text1 = "사이드메뉴에는";
-                        myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
-                        for(String n : names_side){
-                            myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
-                        }
-                        myTTS.speak("가 있습니다.다시들으시려면 사이드다시, 주문하시려면 원하는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
-
-                    }else if(res.equals("음료다시") || res.equals("음료-")){
-                        String text1 = "음료에는";
-                        myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
-                        for(String n : names_soda){
-                            myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
-                        }
-                        myTTS.speak("가 있습니다.다시들으시려면 음료다시, 주문하시려면 원하는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
-
                     }else if(res.equals("구매")){
+                        a=1;
                         Intent i = new Intent(Menu.this, Payment.class);
                         i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                         i.putExtra("name", "장바구니");
@@ -697,48 +715,14 @@ public class Menu extends AppCompatActivity {
                         i.putExtra("pay_content", pay_content);
 
                         startActivity(i);
+                        if(a==1) break;
                     }else if(res.equals("뒤로")){
+                        a=1;
                         Intent i = new Intent(Menu.this, Chicken.class);
                         i.putExtra("flag_from_main", "n");
-                        i.putExtra("shop", "n");
+                        i.putExtra("shop",sh);
                         startActivity(i);
-                    }
-                    else {
-                        for (String n : names_main) {
-                            if (res.equals(n)){
-                                Intent i = new Intent(Menu.this, Payment.class);
-                                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-                                i.putExtra("name", n);
-                                i.putExtra("price", price_main.get(n));
-                                i.putExtra("content", content_main.get(n));
-                                flag++;
-                                startActivity(i);
-                            }
-                        }
-
-                        for (String n : names_side) {
-                            if (res.equals(n)){
-                                Intent i = new Intent(Menu.this, Payment.class);
-                                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-                                i.putExtra("name", n);
-                                i.putExtra("price", price_side.get(n));
-                                i.putExtra("content", content_side.get(n));
-                                flag++;
-                                startActivity(i);
-                            }
-                        }
-
-                        for (String n : names_soda) {
-                            if (res.equals(n)){
-                                Intent i = new Intent(Menu.this, Payment.class);
-                                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-                                i.putExtra("name", n);
-                                i.putExtra("price", price_soda.get(n));
-                                i.putExtra("content", content_soda.get(n));
-                                flag++;
-                                startActivity(i);
-                            }
-                        }
+                        if(a==1) break;
                     }
 
                     new Handler().postDelayed(new Runnable() {
@@ -747,6 +731,8 @@ public class Menu extends AppCompatActivity {
                             mVoiceBtn.performClick();
                         }
                     }, 1000);
+
+
 
                     break;
                 }else{
@@ -771,6 +757,8 @@ public class Menu extends AppCompatActivity {
         if (myTTS != null){
             myTTS.stop();
             myTTS.shutdown();
+
+
         }
     }
 
