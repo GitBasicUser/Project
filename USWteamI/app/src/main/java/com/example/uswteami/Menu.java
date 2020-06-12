@@ -91,6 +91,7 @@ public class Menu extends AppCompatActivity {
 
     private int a=0;
     private Button pay;
+    private int s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,12 +162,27 @@ public class Menu extends AppCompatActivity {
                         myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
                         myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
                         myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 10000);
+
                     } else {
                         String text1 = shopname + " 입니다.";
                         String text2 = "명령어를 말해주세요.";
 
                         myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
                         myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 3500);
                     }
                 }
             });
@@ -179,12 +195,6 @@ public class Menu extends AppCompatActivity {
                 }
             });
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mVoiceBtn.performClick();
-                }
-            }, 500);
 
         }
 
@@ -711,35 +721,61 @@ public class Menu extends AppCompatActivity {
                     if (a==1) break;
 
                     if(res.equals("메인")){
+                        s=0;
                         String text1 = "메인메뉴에는";
                         myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
                         for(String n : names_main){
                             myTTS.setSpeechRate(0.95f);
                             myTTS.speak(n + "  ", TextToSpeech.QUEUE_ADD, null);
+                            s++;
                         }
                         myTTS.setSpeechRate(1f);
                         myTTS.speak("가 있습니다.원하시는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
 
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 5000+2500*s);
+
                     }else if(res.equals("사이드") || res.equals("싸이드")){
+                        s=0;
                         String text1 = "사이드메뉴에는";
                         myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
                         for(String n : names_side){
                             myTTS.setSpeechRate(0.95f);
                             myTTS.speak(n + "  ", TextToSpeech.QUEUE_ADD, null);
+                            s++;
                         }
                         myTTS.setSpeechRate(1f);
                         myTTS.speak("가 있습니다.원하시는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
 
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 4500+2500*s);
+
                     }else if(res.equals("음료")){
+                        s=0;
                         String text1 = "음료에는";
                         myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
                         for(String n : names_soda){
                             myTTS.setSpeechRate(0.95f);
                             myTTS.speak(n + "  ", TextToSpeech.QUEUE_ADD, null);
+                            s++;
                         }
                         myTTS.setSpeechRate(1f);
                         myTTS.speak("가 있습니다.원하시는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
 
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 4000+2000*s);
 
                     }else if(res.equals("다시") || res.equals("-")){
                         String text1 = shopname + " 입니다.";
@@ -749,6 +785,13 @@ public class Menu extends AppCompatActivity {
                         myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
                         myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
                         myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 10000);
                     }else if(res.equals("구매")){
                         a=1;
                         Intent i = new Intent(Menu.this, Payment.class);
@@ -769,15 +812,6 @@ public class Menu extends AppCompatActivity {
                         startActivity(i);
                         if(a==1) break;
                     }
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mVoiceBtn.performClick();
-                        }
-                    }, 1000);
-
-
 
                     break;
                 }else{
