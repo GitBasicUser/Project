@@ -11,6 +11,8 @@ import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -54,6 +56,7 @@ public class Menu extends AppCompatActivity {
     private static String shopname;
     private String flag_from_chicken;
     private String sh;
+    private static String stt;
 
     // Intent로 받아오는 변수(Menu.java로부터)
     private static ArrayList<String> pay_name = new ArrayList<>();
@@ -72,9 +75,8 @@ public class Menu extends AppCompatActivity {
     List<String> names_main = new ArrayList<>();
     List<String> names_side = new ArrayList<>();
     List<String> names_soda = new ArrayList<>();
-    ListView mlistView_main;
-    ListView mlistView_side;
-    ListView mlistView_soda;
+    ListView mlistView;
+    ListViewAdapter adapter;
     String mJsonString_main;
     String mJsonString_side;
     String mJsonString_soda;
@@ -88,6 +90,7 @@ public class Menu extends AppCompatActivity {
     HashMap<String, String> content_soda = new HashMap<>();
 
     private int a=0;
+    private Button pay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,7 @@ public class Menu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_layout);
 
+        pay = (Button)findViewById(R.id.pay);
         mVoiceBtn = (ImageButton)findViewById(R.id.voiceBtn);
 
         final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
@@ -108,19 +112,17 @@ public class Menu extends AppCompatActivity {
             shop = get.getStringExtra("shop");
             shopname = get.getStringExtra("shopname");
             sh = get.getStringExtra("a");
+            stt = get.getStringExtra("sttSwitch");
         }
 
 
         if(flag != 0){
             Intent g = getIntent();
             if(!g.getStringExtra("name").equals("no")){
-                Log.d("name: ", g.getStringExtra("name"));
                 pay_name.add(g.getStringExtra("name"));
                 pay_price.add(g.getStringExtra("price"));
                 pay_content.add(g.getStringExtra("content"));
             }
-
-            Log.d("flag", get.getStringExtra("flag_delete"));
             if(g.getStringExtra("flag_delete").equals("y")){
                 pay_name = (ArrayList<String>) g.getSerializableExtra("pay_name");
                 pay_price = (ArrayList<String>) g.getSerializableExtra("pay_price");
@@ -132,13 +134,10 @@ public class Menu extends AppCompatActivity {
 
 
 
-        mlistView_main = (ListView) findViewById(R.id.listView_main_list_main);
+        mlistView = (ListView) findViewById(R.id.listView);
+        adapter = new ListViewAdapter();
         mArrayList_main = new ArrayList<>();
-
-        mlistView_side = (ListView) findViewById(R.id.listView_main_list_side);
         mArrayList_side = new ArrayList<>();
-
-        mlistView_soda = (ListView) findViewById(R.id.listView_main_list_soda);
         mArrayList_soda = new ArrayList<>();
 
         GetData_main task1 = new GetData_main();
@@ -150,43 +149,98 @@ public class Menu extends AppCompatActivity {
         GetData_soda task3 = new GetData_soda();
         task3.execute("http://uswteami.dothome.co.kr/my/board/chicken/menu/json_soda.php");
 
-        myTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+        if(stt.equals("y")) {
+            myTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if (flag == 0) {
+                        String text1 = shopname + " 입니다.";
+                        String text2 = "메인메뉴는 메인, 사이드메뉴는 사이드, 음료는 음료, 또는 메뉴 이름 을 말해주세요.";
+                        String text3 = "장바구니 이동은 구매 입니다.";
+
+                        myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
+                        myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+                        myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
+                    } else {
+                        String text1 = shopname + " 입니다.";
+                        String text2 = "명령어를 말해주세요.";
+
+                        myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
+                        myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+                    }
+                }
+            });
+
+            mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    player_s.start();
+                    speak();
+                }
+            });
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mVoiceBtn.performClick();
+                }
+            }, 500);
+
+        }
+
+        mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onInit(int status) {
-                if(flag == 0) {
-                    String text1 = shopname + " 입니다.";
-                    String text2 = "메인메뉴는 메인, 사이드메뉴는 사이드, 음료는 음료, 또는 메뉴 이름 을 말해주세요.";
-                    String text3 = "장바구니 이동은 구매 입니다.";
-
-                    myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
-                    myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
-                    myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(adapter.getName(position).equals("메인메뉴") || adapter.getName(position).equals("사이드메뉴") || adapter.getName(position).equals("음료"))
+                {}
+                else if(position <= price_main.size() + 1) {
+                    a = 1;
+                    Intent i = new Intent(Menu.this, Payment.class);
+                    i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.putExtra("name", adapter.getName(position));
+                    i.putExtra("price", price_main.get(adapter.getName(position)));
+                    i.putExtra("content", content_main.get(adapter.getName(position)));
+                    i.putExtra("sttSwitch", stt);
+                    flag++;
+                    startActivity(i);
+                }else if(position <= price_main.size() + price_side.size() + 2){
+                    a = 1;
+                    Intent i = new Intent(Menu.this, Payment.class);
+                    i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.putExtra("name", adapter.getName(position));
+                    i.putExtra("price", price_side.get(adapter.getName(position)));
+                    i.putExtra("content", content_side.get(adapter.getName(position)));
+                    i.putExtra("sttSwitch", stt);
+                    flag++;
+                    startActivity(i);
                 }else{
-                    String text1 = shopname + " 입니다.";
-                    String text2 = "명령어를 말해주세요.";
-
-                    myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
-                    myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+                    a = 1;
+                    Intent i = new Intent(Menu.this, Payment.class);
+                    i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.putExtra("name", adapter.getName(position));
+                    i.putExtra("price", price_soda.get(adapter.getName(position)));
+                    i.putExtra("content", content_soda.get(adapter.getName(position)));
+                    i.putExtra("sttSwitch", stt);
+                    flag++;
+                    startActivity(i);
                 }
             }
         });
 
-        mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+        pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                player_s.start();
-                speak();
+                Intent i = new Intent(Menu.this, Payment.class);
+                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                i.putExtra("name", "장바구니");
+                i.putExtra("pay_name", pay_name);
+                i.putExtra("pay_price", pay_price);
+                i.putExtra("pay_content", pay_content);
+                i.putExtra("sttSwitch", stt);
+
+                startActivity(i);
             }
         });
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mVoiceBtn.performClick();
-            }
-        }, 500);
-
-
     }
 
     private class GetData_main extends AsyncTask<String, Void, String> {
@@ -275,6 +329,8 @@ public class Menu extends AppCompatActivity {
 
 
     private void showResult_main() {
+        mlistView.setAdapter(adapter);
+        adapter.addItem("", "메인메뉴", "");
         try {
             JSONObject jsonObject = new JSONObject(mJsonString_main);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
@@ -296,23 +352,13 @@ public class Menu extends AppCompatActivity {
                     hashMap.put(TAG_NAME, name);
                     hashMap.put(TAG_ADDRESS, address);
 
-
-                    mArrayList_main.add(hashMap);
                     names_main.add(name);
                     price_main.put(name, address);
                     content_main.put(name, content);
+                    adapter.addItem(num.toString(), name, address);
                 }
                 else continue;
             }
-
-            ListAdapter adapter = new SimpleAdapter(
-                    Menu.this, mArrayList_main, R.layout.item_list,
-                    new String[]{TAG_ID, TAG_NAME, TAG_ADDRESS},
-                    new int[]{R.id.num, R.id.name, R.id.address}
-            );
-
-            mlistView_main.setAdapter(adapter);
-
 
         } catch (JSONException e) {
 
@@ -407,6 +453,8 @@ public class Menu extends AppCompatActivity {
 
 
     private void showResult_side() {
+        mlistView.setAdapter(adapter);
+        adapter.addItem("", "사이드메뉴", "");
         try {
             JSONObject jsonObject = new JSONObject(mJsonString_side);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
@@ -428,22 +476,13 @@ public class Menu extends AppCompatActivity {
                     hashMap.put(TAG_NAME, name);
                     hashMap.put(TAG_ADDRESS, address);
 
-
-                    mArrayList_side.add(hashMap);
                     names_side.add(name);
                     price_side.put(name,address);
                     content_side.put(name,content);
+                    adapter.addItem(num.toString(), name, address);
                 }
                 else continue;
             }
-
-            ListAdapter adapter = new SimpleAdapter(
-                    Menu.this, mArrayList_side, R.layout.item_list,
-                    new String[]{TAG_ID, TAG_NAME, TAG_ADDRESS},
-                    new int[]{R.id.num, R.id.name, R.id.address}
-            );
-
-            mlistView_side.setAdapter(adapter);
 
 
         } catch (JSONException e) {
@@ -540,6 +579,8 @@ public class Menu extends AppCompatActivity {
 
 
     private void showResult_soda() {
+        mlistView.setAdapter(adapter);
+        adapter.addItem("", "음료", "");
         try {
             JSONObject jsonObject = new JSONObject(mJsonString_soda);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
@@ -561,23 +602,13 @@ public class Menu extends AppCompatActivity {
                     hashMap.put(TAG_NAME, name);
                     hashMap.put(TAG_ADDRESS, address);
 
-
-                    mArrayList_soda.add(hashMap);
                     names_soda.add(name);
                     price_soda.put(name, address);
                     content_soda.put(name, content);
+                    adapter.addItem(num.toString(), name, address);
                 }
                 else continue;
             }
-
-            ListAdapter adapter = new SimpleAdapter(
-                    Menu.this, mArrayList_soda, R.layout.item_list,
-                    new String[]{TAG_ID, TAG_NAME, TAG_ADDRESS},
-                    new int[]{R.id.num, R.id.name, R.id.address}
-            );
-
-            mlistView_soda.setAdapter(adapter);
-
 
         } catch (JSONException e) {
 
@@ -634,6 +665,12 @@ public class Menu extends AppCompatActivity {
                             i.putExtra("name", n);
                             i.putExtra("price", price_main.get(n));
                             i.putExtra("content", content_main.get(n));
+
+                            Toast.makeText(Menu.this, n, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Menu.this, price_main.get(n), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Menu.this, content_main.get(n), Toast.LENGTH_SHORT).show();
+
+                            i.putExtra("sttSwitch", stt);
                             flag++;
                             startActivity(i);
                         }
@@ -647,6 +684,12 @@ public class Menu extends AppCompatActivity {
                             i.putExtra("name", n);
                             i.putExtra("price", price_side.get(n));
                             i.putExtra("content", content_side.get(n));
+
+                            Toast.makeText(Menu.this, n, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Menu.this, price_side.get(n), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Menu.this, content_side.get(n), Toast.LENGTH_SHORT).show();
+
+                            i.putExtra("sttSwitch", stt);
                             flag++;
                             startActivity(i);
                         }
@@ -660,6 +703,7 @@ public class Menu extends AppCompatActivity {
                             i.putExtra("name", n);
                             i.putExtra("price", price_soda.get(n));
                             i.putExtra("content", content_soda.get(n));
+                            i.putExtra("sttSwitch", stt);
                             flag++;
                             startActivity(i);
                         }
@@ -713,10 +757,11 @@ public class Menu extends AppCompatActivity {
                         i.putExtra("pay_name", pay_name);
                         i.putExtra("pay_price", pay_price);
                         i.putExtra("pay_content", pay_content);
+                        i.putExtra("sttSwitch", stt);
 
                         startActivity(i);
                         if(a==1) break;
-                    }else if(res.equals("뒤로")){
+                    }else if(res.equals("이전")){
                         a=1;
                         Intent i = new Intent(Menu.this, Chicken.class);
                         i.putExtra("flag_from_main", "n");

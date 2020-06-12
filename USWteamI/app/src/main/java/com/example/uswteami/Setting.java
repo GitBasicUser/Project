@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -27,12 +28,10 @@ public class Setting extends AppCompatActivity implements OnInitListener {
     private Button placeLayoutChange, back, save;
     private TextView placeLayout, text;
     private ImageButton mVoiceBtn;
-    private static String place, speech;
-
-    private Intent intent;
-    private SpeechRecognizer mRecognizer_setting;
 
     private TextToSpeech myTTS;
+    private static String place;
+    private static String stt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +40,12 @@ public class Setting extends AppCompatActivity implements OnInitListener {
 
         Intent getp = getIntent();
         place = getp.getStringExtra("place");
+        stt = getp.getStringExtra("sttSwitch");
 
         placeLayoutChange = (Button)findViewById(R.id.placeLayoutChange);
+        text = (TextView) findViewById(R.id.text);
+        placeLayout = (TextView) findViewById(R.id.placeLayout);
+        placeLayout.setText(place);
         back = (Button)findViewById(R.id.back);
         save = (Button)findViewById(R.id.btn_save);
         mVoiceBtn = findViewById(R.id.voiceBtn);
@@ -50,43 +53,35 @@ public class Setting extends AppCompatActivity implements OnInitListener {
         bs.add(back);
         bs.add(save);
 
-        myTTS = new TextToSpeech(this, this);
 
-        final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
+        if(stt.equals("y")) {
+            myTTS = new TextToSpeech(this, this);
 
-        text = (TextView)findViewById(R.id.text);
-        placeLayout = (TextView)findViewById(R.id.placeLayout);
-        placeLayout.setText(place);
+            final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
-        back.setOnClickListener(onClick);
-        save.setOnClickListener(onClick);
-        placeLayoutChange.setOnClickListener(onClick);
+            back.setOnClickListener(onClick);
+            save.setOnClickListener(onClick);
+            placeLayoutChange.setOnClickListener(onClick);
 
-        mVoiceBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                player_s.start();
-                speak();
-            }
-        });
+            mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    player_s.start();
+                    speak();
+                }
+            });
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mVoiceBtn.performClick();
-            }
-        }, 500);
-
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mVoiceBtn.performClick();
+                }
+            }, 500);
+        }
+        for(int i = 0; i< bs.size(); i++){
+            bs.get(i).setOnClickListener(onClick);
+        }
     }
-
-    @Override
-    public void onInit(int status) {
-        String myText1 = "설정입니다.";
-        String text2 = "매장 나열 방식의 교체를 원하시면 매장 을 말해주세요.";
-        myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
-        myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
-    }
-
 
     View.OnClickListener onClick = new View.OnClickListener() {
 
@@ -95,46 +90,34 @@ public class Setting extends AppCompatActivity implements OnInitListener {
         public void onClick(View v) {
 
             switch(v.getId()){
-
                 case R.id.placeLayoutChange:
-
                     if(placeLayout.getText().toString().equals("앱 지정순")) placeLayout.setText("리뷰 많은 순");
-
                     else placeLayout.setText("앱 지정순");
-
                     break;
-
                 case R.id.back:
-
                     Intent i = new Intent(Setting.this, MainActivity.class);
-
                     i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-
                     i.putExtra("place", place);
-
                     startActivity(i);
-
                     break;
-
                 case R.id.btn_save:
-
                     Intent i_save = new Intent(Setting.this, MainActivity.class);
-
                     i_save.setFlags(i_save.FLAG_ACTIVITY_CLEAR_TOP);
-
                     i_save.putExtra("place", placeLayout.getText().toString());
-
                     Toast.makeText(Setting.this, "저장되었습니다", Toast.LENGTH_SHORT).show();
-
-
-
                     startActivity(i_save);
 
             }
-
         }
-
     };
+
+    @Override
+    public void onInit(int status) {
+        String myText1 = "설정입니다.";
+        String text2 = "매장 나열 방식의 교체를 원하시면 매장 을 말해주세요.";
+        myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
+        myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+    }
 
 
 
@@ -242,79 +225,43 @@ public class Setting extends AppCompatActivity implements OnInitListener {
                 myTTS.setSpeechRate(0.95f);
                 myTTS.speak(myText3, TextToSpeech.QUEUE_ADD, null);
             }
-
             myTTS.setSpeechRate(1f);
             String textOut = "현재 설정의 저장을 원하시면 저장, 원하시지 않으면 뒤로 를 말해주세요.";
             myTTS.speak(textOut, TextToSpeech.QUEUE_ADD, null);
-
             new Handler().postDelayed(new Runnable() {
-
                 @Override
-
                 public void run() {
-
                     placeLayout.performClick();
-
                 }
-
             }, 500);
-
-            new Handler().postDelayed(new Runnable() {
-
-                @Override
-
-                public void run() {
-
-                    mVoiceBtn.performClick();
-
-                }
-
-            }, 1000);
-
         }else if(text.equals(bs.get(1).getText().toString())){
-
             Intent i = new Intent(Setting.this, MainActivity.class);
-
             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-
             i.putExtra("place", place);
-
             startActivity(i);
-
         }else if(text.equals(bs.get(2).getText().toString())){
-
             final Intent i_save = new Intent(Setting.this, MainActivity.class);
-
             i_save.setFlags(i_save.FLAG_ACTIVITY_CLEAR_TOP);
-
             i_save.putExtra("place", placeLayout.getText().toString());
-
             Toast.makeText(Setting.this, "저장되었습니다", Toast.LENGTH_SHORT).show();
             myTTS.speak("저장되었습니다.", TextToSpeech.QUEUE_ADD, null);
-
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     startActivity(i_save);
                 }
             }, 300);
-
-        }else {
-
+        } else {
             new Handler().postDelayed(new Runnable() {
 
                 @Override
 
                 public void run() {
-
                     mVoiceBtn.performClick();
-
                 }
 
             }, 1000);
-
         }
-
     }
 
     @Override

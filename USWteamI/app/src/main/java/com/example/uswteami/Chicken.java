@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -53,33 +55,43 @@ public class Chicken extends AppCompatActivity {
     HashMap<String,String> shopnames = new HashMap<>();
     List<String> names = new ArrayList<>();
     ListView mlistView;
+    ListViewAdapter adapter;
 
     private static String place;
+    private static String stt;
     private String sh;
     private int a = 0;
+
+    private Button back;
+    private List<Button> btns = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chicken_layout);
 
-        place_layout = (TextView)findViewById(R.id.placeLayout);
+        place_layout = (TextView) findViewById(R.id.placeLayout);
         mlistView = (ListView) findViewById(R.id.listView_main_list);
+        adapter = new ListViewAdapter();
         mArrayList = new ArrayList<>();
-        mVoiceBtn = (ImageButton)findViewById(R.id.voiceBtn);
+        mVoiceBtn = (ImageButton) findViewById(R.id.voiceBtn);
+
+        back = (Button)findViewById(R.id.back);
+        btns.add(back);
 
         final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
         GetData task = new GetData();
 
         Intent get = getIntent();
-        if(get.getStringExtra("flag_from_main").equals("y")) {
+        if (get.getStringExtra("flag_from_main").equals("y")) {
             place = get.getStringExtra("place");
+            stt = get.getStringExtra("sttSwitch");
             place_layout.setText(place);
         }
-        if(!get.getStringExtra("shop").equals("n")){
+        if (!get.getStringExtra("shop").equals("n")) {
             sh = get.getStringExtra("shop");
-            switch(sh){
+            switch (sh) {
                 case "치킨":
                     task.execute("http://uswteami.dothome.co.kr/my/board/chicken/json.php");
                     break;
@@ -89,40 +101,76 @@ public class Chicken extends AppCompatActivity {
 
             }
         }
-        myTTS = new TextToSpeech(this, new OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                String Text = sh + " 카테고리입니다.배달가능한 " + sh + " 집은";
-                myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
+        if (stt.equals("y")) {
+            myTTS = new TextToSpeech(this, new OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    String Text = sh + " 카테고리입니다.배달가능한 " + sh + " 집은";
+                    myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
 
-                for(String n : names){
-                    myTTS.setSpeechRate(0.95f);
-                    myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
+                    for (String n : names) {
+                        myTTS.setSpeechRate(0.95f);
+                        myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
+                    }
+
+                    myTTS.setSpeechRate(1f);
+                    String text2 = "입니다. 원하시는 가게이름 을 말해주세요.";
+                    myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
                 }
+            });
 
-                myTTS.setSpeechRate(1f);
-                String text2 = "입니다. 원하시는 가게이름 을 말해주세요.";
-                myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+            mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    player_s.start();
+                    speak();
+                }
+            });
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mVoiceBtn.performClick();
+                }
+            }, 500);
+
+
+        }
+
+        for(int i=0; i<btns.size(); i++){
+            btns.get(i).setOnClickListener(onClick);
+        }
+        mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                a = 1;
+                Intent i = new Intent(view.getContext(), Menu.class);
+                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                i.putExtra("a", sh);
+                i.putExtra("shop", shops.get(adapter.getName(position)));
+                i.putExtra("shopname", shopnames.get(adapter.getName(position)));
+                i.putExtra("flag_from_chicken", "y");
+                i.putExtra("sttSwitch", stt);
+                startActivity(i);
             }
         });
-
-        mVoiceBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                player_s.start();
-                speak();
-            }
-        });
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mVoiceBtn.performClick();
-            }
-        }, 500);
-
 
     }
+
+    View.OnClickListener onClick = new View.OnClickListener(){
+
+        @Override
+        public void onClick(View v) {
+            switch(v.getId()){
+                case R.id.back:
+                    Intent i = new Intent(Chicken.this, MainActivity.class);
+                    i.putExtra("place", place);
+                    startActivity(i);
+                    break;
+            }
+        }
+    };
+
 
     private class GetData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
@@ -211,6 +259,8 @@ public class Chicken extends AppCompatActivity {
     }
 
     private void showResult(){
+        mlistView.setAdapter(adapter);
+
         try {
             JSONObject jsonObject = new JSONObject(mJsonString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
@@ -259,10 +309,11 @@ public class Chicken extends AppCompatActivity {
                             if(n.equals(name)) f = false;
                         }
                         if(f) {
-                            mArrayList.add(hashMap);
+                            //mArrayList.add(hashMap);
                             names.add(name);
                             shops.put(name, shop);
                             shopnames.put(shop, name);
+                            adapter.addItem(numb.toString(), name, address);
 
                             k++;
                             i = -1;
@@ -275,20 +326,21 @@ public class Chicken extends AppCompatActivity {
                     hashMap.put(TAG_NAME, name);
                     hashMap.put(TAG_ADDRESS, address);
 
-                    mArrayList.add(hashMap);
+                    //mArrayList.add(hashMap);
                     names.add(name);
                     shops.put(name, shop);
                     shopnames.put(shop, name);
+                    adapter.addItem(num.toString(), name, address);
                 }
             }
 
-            ListAdapter adapter = new SimpleAdapter(
-                    Chicken.this, mArrayList, R.layout.item_list_place,
-                    new String[]{TAG_ID,TAG_NAME, TAG_ADDRESS},
-                    new int[]{R.id.num, R.id.name, R.id.address}
-            );
+//            ListAdapter adapter = new SimpleAdapter(
+//                    Chicken.this, mArrayList, R.layout.item_list_place,
+//                    new String[]{TAG_ID,TAG_NAME, TAG_ADDRESS},
+//                    new int[]{R.id.num, R.id.name, R.id.address}
+//            );
 
-            mlistView.setAdapter(adapter);
+            //mlistView.setAdapter(adapter);
 
         } catch (JSONException e) {
 
@@ -342,6 +394,7 @@ public class Chicken extends AppCompatActivity {
                             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                             i.putExtra("a", sh);
                             i.putExtra("shop", shops.get(n));
+                            i.putExtra("sttSwitch", stt);
                             i.putExtra("shopname", shopnames.get(shops.get(n)));
                             i.putExtra("flag_from_chicken", "y");
                             startActivity(i);
@@ -350,7 +403,7 @@ public class Chicken extends AppCompatActivity {
 
                     if(a == 1) break;
 
-                    if(result.get(0).equals("뒤로")){
+                    if(result.get(0).equals("이전")){
                         Intent i = new Intent(Chicken.this, MainActivity.class);
                         i.putExtra("place", place);
                         startActivity(i);

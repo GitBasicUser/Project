@@ -13,48 +13,33 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:text="음성인식 배달 앱"
-            android:textSize="25dp"
+            android:layout_width="324dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="center"
-            />
+            android:text="음성인식 배달 앱"
+            android:textSize="25dp" />
 
 
-        <Button
+        <ImageButton
             android:id="@+id/settingBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="설정"
-            android:textSize="25dp"
-            />
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/setting" />
 
 
         <ImageButton
             android:id="@+id/voiceBtn"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_mic"
             android:scaleType="fitCenter"
+            android:src="@drawable/ic_mic"
 
             />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=" "
-        android:textColor="#000"
-        android:textSize="25dp" />
-
-    <TextView
-        android:id="@+id/testText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -70,20 +55,25 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <Button
-                    android:layout_width="264dp"
+                <ImageButton
+                    android:id="@+id/btn_chicken"
+                    android:layout_width="228dp"
                     android:layout_height="188dp"
                     android:layout_weight="3"
-                    android:background="@drawable/chicken" />
+                    android:scaleType="fitXY"
+                    android:src="@drawable/chicken" />
 
-                <Button
-                    android:layout_width="wrap_content"
+                <ImageButton
+                    android:id="@+id/btn_pizza"
+                    android:layout_width="152dp"
                     android:layout_height="184dp"
                     android:layout_weight="1"
-                    android:background="@drawable/pizza" />
+                    android:scaleType="fitXY"
+                    android:src="@drawable/pizza" />
 
-                <Button
-                    android:layout_width="wrap_content"
+                <ImageButton
+                    android:id="@+id/btn_jajang"
+                    android:layout_width="239dp"
                     android:layout_height="match_parent"
                     android:layout_weight="4"
                     android:background="@drawable/jajang" />
@@ -95,28 +85,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/btn_chicken"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="치킨"
+                    android:gravity="center"
                     android:textSize="30dp"/>
 
-                <Button
-                    android:id="@+id/btn_pizza"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="피자"
+                    android:gravity="center"
                     android:textSize="30dp"/>
 
-                <Button
-                    android:id="@+id/btn_jajang"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="중식"
+                    android:gravity="center"
                     android:textSize="30dp"/>
 
             </LinearLayout>

@@ -10,10 +10,17 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="메인메뉴"
             android:layout_weight="1"
             android:textSize="30dp"/>
+
+        <Button
+            android:id="@+id/pay"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="장바구니"
+            android:textSize="30dp" />
 
         <ImageButton
             android:id="@+id/voiceBtn"
@@ -31,34 +38,7 @@
         android:layout_weight="6"
         android:layout_margin="5dp"
         android:padding="5dp"
-        android:id="@+id/listView_main_list_main" />
+        android:id="@+id/listView" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="사이드메뉴"
-        android:textSize="30dp"/>
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
-        android:layout_margin="5dp"
-        android:padding="5dp"
-        android:id="@+id/listView_main_list_side" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="음료"
-        android:textSize="30dp"/>
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
-        android:layout_margin="5dp"
-        android:padding="5dp"
-        android:id="@+id/listView_main_list_soda" />
 
 </LinearLayout>

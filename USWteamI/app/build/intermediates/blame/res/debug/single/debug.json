@@ -4,8 +4,16 @@
         "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\layout\\chicken_layout.xml"
     },
     {
+        "merged": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\build\\intermediates\\res\\merged\\debug\\layout_payment.xml.flat",
+        "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\layout\\payment.xml"
+    },
+    {
         "merged": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher_round.png.flat",
         "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\build\\intermediates\\res\\merged\\debug\\drawable_setting.PNG.flat",
+        "source": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\src\\main\\res\\drawable\\setting.PNG"
     },
     {
         "merged": "D:\\School\\2-1\\Java\\Project\\Project\\USWteamI\\app\\build\\intermediates\\res\\merged\\debug\\raw_finish.mp3.flat",

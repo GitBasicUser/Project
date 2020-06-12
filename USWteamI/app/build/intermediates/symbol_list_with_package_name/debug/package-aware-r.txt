@@ -677,6 +677,7 @@ drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
 drawable pizza
+drawable setting
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
 id ALT
@@ -789,10 +790,8 @@ id left
 id line1
 id line3
 id listMode
+id listView
 id listView_main_list
-id listView_main_list_main
-id listView_main_list_side
-id listView_main_list_soda
 id list_item
 id message
 id middle
@@ -810,6 +809,8 @@ id on
 id packed
 id parent
 id parentPanel
+id pay
+id payPrice
 id payment
 id percent
 id placeLayout
@@ -861,12 +862,10 @@ id tag_screen_reader_focusable
 id tag_transition_group
 id tag_unhandled_key_event_manager
 id tag_unhandled_key_listeners
-id testText
 id text
 id text2
 id textSpacerNoButtons
 id textSpacerNoTitle
-id textTv
 id time
 id title
 id titleDividerNoCustom
@@ -877,6 +876,7 @@ id unchecked
 id uniform
 id up
 id useLogo
+id var
 id voiceBtn
 id withText
 id wrap
@@ -934,6 +934,7 @@ layout notification_template_custom_big
 layout notification_template_icon_group
 layout notification_template_part_chronometer
 layout notification_template_part_time
+layout payment
 layout payment_layout
 layout select_dialog_item_material
 layout select_dialog_multichoice_material
