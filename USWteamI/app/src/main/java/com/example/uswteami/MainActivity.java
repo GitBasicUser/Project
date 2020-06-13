@@ -49,11 +49,15 @@ public class MainActivity extends AppCompatActivity {
     private TextToSpeech myTTS;
     private static String sttSwitch = "y";
 
+<<<<<<< HEAD
     private ArrayList<String> pay_name = new ArrayList<>();
     private ArrayList<String> pay_price = new ArrayList<>();
     private ArrayList<String> pay_content = new ArrayList<>();
     int k = 0;
     Button aa;
+=======
+    private int a =0;
+>>>>>>> 15c25ffb74591a8b744da7748039602dd424a506
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,16 +103,30 @@ public class MainActivity extends AppCompatActivity {
                 public void onInit(int status) {
                     if(flag == 0) {
                         String myText1 = "음성인식 배달 앱 입니다.";
-                        String myText2 = "안내가 끝난 후, 알림음이 나오면 명령어를 말해주세요.처음 사용하실경우 반드시 사용법 을 말하여 안내를 들어주시기 바랍니다.";
+                        String myText2 = "안내가 끝난 후, 알림음이 나오면 명령어를 말해주세요. 처음 사용하실경우 반드시 사용법 을 말하여 안내를 들어주시기 바랍니다.";
                         String myText3 = "설정, 주문, 또는 사용법 을 말씀해주세요.";
 
                         myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
                         myTTS.speak(myText2, TextToSpeech.QUEUE_ADD, null);
                         myTTS.speak(myText3, TextToSpeech.QUEUE_ADD, null);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 14500);
                     }else{
                         String myText = "설정, 주문, 또는 사용법 을 말씀해주세요.";
 
                         myTTS.speak(myText, TextToSpeech.QUEUE_ADD, null);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 4000);
                     }
                 }
             });
@@ -122,12 +140,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mVoiceBtn.performClick();
-                }
-            }, 500);
 
         }
         for(int i = 0; i<btns.size(); i++){
@@ -265,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     if(sttSwitch.equals("y")) {
-                        if (result.get(0).equals("다시")) {
+                        if (result.get(0).equals("다시") || result.get(0).equals("-")) {
                             if(flag == 0) {
                                 String myText1 = "음성인식 배달 앱 입니다.";
                                 String myText2 = "안내가 끝난 후, 알림음이 나오면 명령어를 말해주세요.처음 사용하실경우 반드시 사용법 을 말하여 안내를 들어주시기 바랍니다.";
@@ -274,10 +286,24 @@ public class MainActivity extends AppCompatActivity {
                                 myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
                                 myTTS.speak(myText2, TextToSpeech.QUEUE_ADD, null);
                                 myTTS.speak(myText3, TextToSpeech.QUEUE_ADD, null);
+
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 14500);
                             }else{
                                 String myText = "설정, 주문, 또는 사용법 을 말씀해주세요.";
 
                                 myTTS.speak(myText, TextToSpeech.QUEUE_ADD, null);
+
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 4500);
                             }
                         } else if (result.get(0).equals("주문")) {
                             if(flag == 0) {
@@ -291,14 +317,24 @@ public class MainActivity extends AppCompatActivity {
                             }else{
                                 String order1 = "치킨, 피자, 또는 재주문 을 말해주세요.";
 
+<<<<<<< HEAD
                                 myTTS.speak(order1, TextToSpeech.QUEUE_ADD, null);
                             }
+=======
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 8500);
+
+>>>>>>> 15c25ffb74591a8b744da7748039602dd424a506
                         } else if (result.get(0).equals("사용법")) {
                             String text1 = "해당 배달앱은 음성인식을 적용하여 특정 명령어들로 주문이 가능한 배달앱 입니다.";
-                            String text2 = "명령어 입력 후, 안내가 나오지 않고 알림음이 다시 나온다면 해당 명령어를 천천히 다시 말해주시기 바랍니다.";
+                            String text2 = "명령어 입력 후, 안내가 나오지 않고 알림음이 다시 나온다면, 해당 명령어를 천천히 다시 말해주시기 바랍니다.";
                             String text3 = "안내로 나오지 않아도 항상 적용되는 명령어에는";
                             String text4 = "이전페이지로 돌아가게 해주는 이전, 안내를 한번 더 들려주는 다시 가 있습니다.";
-                            String text5 = "음성인식을 종료하고싶으시면 종료, 음성인식을 재실행 하고 싶으시면 오른쪽위 마이크버튼을 누른 후, 실행 을 말해주세요.";
+                            String text5 = "음성인식을 종료하고싶으시면 종료, 음성인식을 재실행 하고 싶으시면 오른쪽 위 마이크버튼을 누른 후, 실행 을 말해주세요.";
 
                             myTTS.setSpeechRate(0.95f);
                             myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
@@ -307,6 +343,13 @@ public class MainActivity extends AppCompatActivity {
                             myTTS.speak(text4, TextToSpeech.QUEUE_ADD, null);
                             myTTS.speak(text5, TextToSpeech.QUEUE_ADD, null);
                             myTTS.setSpeechRate(1f);
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 48000);
                         } else if (result.get(0).equals("종료")) {
                             sttSwitch = "n";
                         } else if(result.get(0).equals("재주문")){
@@ -337,6 +380,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         btsClick(result.get(0));
                     }
+
                     break;
                 }
             }
@@ -357,14 +401,20 @@ public class MainActivity extends AppCompatActivity {
     private void btsClick (String text) {
         flag++;
         if (text.equals("설정")) {
+            a=1;
             n++;
             Intent i = new Intent(MainActivity.this, Setting.class);
             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
             i.putExtra("place", place);
             i.putExtra("sttSwitch", sttSwitch);
             startActivity(i);
+
         } else if (text.equals("치킨") || text.equals("피자")) {
+<<<<<<< HEAD
             n++;
+=======
+            a=1;
+>>>>>>> 15c25ffb74591a8b744da7748039602dd424a506
             Intent j = new Intent(MainActivity.this, Chicken.class);
             j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
             j.putExtra("shop", text);
@@ -372,12 +422,16 @@ public class MainActivity extends AppCompatActivity {
             j.putExtra("place", place);
             j.putExtra("sttSwitch", sttSwitch);
             startActivity(j);
-        } else if(sttSwitch.equals("y")) {
+
+        }
+
+        else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mVoiceBtn.performClick();
-                }}, 1000);
+                }
+            }, 1000);
         }
     }
 

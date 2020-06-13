@@ -61,6 +61,7 @@ public class Chicken extends AppCompatActivity {
     private static String stt;
     private String sh;
     private int a = 0;
+    private int s;
 
     private Button back;
     private List<Button> btns = new ArrayList<>();
@@ -105,17 +106,26 @@ public class Chicken extends AppCompatActivity {
             myTTS = new TextToSpeech(this, new OnInitListener() {
                 @Override
                 public void onInit(int status) {
+                    s=0;
                     String Text = sh + " 카테고리입니다.배달가능한 " + sh + " 집은";
                     myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
 
                     for (String n : names) {
                         myTTS.setSpeechRate(0.95f);
                         myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
+                        s++;
                     }
 
                     myTTS.setSpeechRate(1f);
                     String text2 = "입니다. 원하시는 가게이름 을 말해주세요.";
                     myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mVoiceBtn.performClick();
+                        }
+                    }, 6500+2250*s);
                 }
             });
 
@@ -126,13 +136,6 @@ public class Chicken extends AppCompatActivity {
                     speak();
                 }
             });
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mVoiceBtn.performClick();
-                }
-            }, 500);
 
 
         }
@@ -403,13 +406,16 @@ public class Chicken extends AppCompatActivity {
                         startActivity(i);
                     }
                     else if(result.get(0).equals("다시") || result.get(0).equals("-")){
+                        s=0;
                         String Text = sh + " 카테고리입니다.배달가능한 " + sh + "집은";
                         myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
 
                         for(String n : names){
                             myTTS.setSpeechRate(0.95f);
                             myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
+                            s++;
                         }
+                        myTTS.setSpeechRate(1f);
                         String text2 = "입니다. 원하시는 가게이름을 말해주세요.";
                         myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
 
@@ -418,7 +424,7 @@ public class Chicken extends AppCompatActivity {
                             public void run() {
                                 mVoiceBtn.performClick();
                             }
-                        }, 1000);
+                        }, 6500+2250*s);
                     }else{
                         new Handler().postDelayed(new Runnable() {
                             @Override

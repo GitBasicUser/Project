@@ -71,12 +71,6 @@ public class Setting extends AppCompatActivity implements OnInitListener {
                 }
             });
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mVoiceBtn.performClick();
-                }
-            }, 500);
         }
         for(int i = 0; i< bs.size(); i++){
             bs.get(i).setOnClickListener(onClick);
@@ -119,6 +113,13 @@ public class Setting extends AppCompatActivity implements OnInitListener {
         String text2 = "매장 나열 방식의 교체를 원하시면 매장 을 말해주세요.";
         myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
         myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mVoiceBtn.performClick();
+            }
+        }, 6000);
     }
 
 
@@ -217,26 +218,29 @@ public class Setting extends AppCompatActivity implements OnInitListener {
 
             if(placeLayout.getText().toString().equals("앱 지정순")){
                 placeLayout.setText("리뷰 많은 순");
-                String myText2 = "현재 매장 나열 방식은" + placeLayout.getText().toString() + "입니다.";
+                String myText2 = "현재 매장 나열 방식은 " + placeLayout.getText().toString() + "입니다.";
                 myTTS.setSpeechRate(0.95f);
                 myTTS.speak(myText2, TextToSpeech.QUEUE_ADD, null);
             }
             else {
                 placeLayout.setText("앱 지정순");
-                String myText3 = "현재 매장 나열 방식은" + placeLayout.getText().toString() + "입니다.";
+                String myText3 = "현재 매장 나열 방식은 " + placeLayout.getText().toString() + "입니다.";
                 myTTS.setSpeechRate(0.95f);
                 myTTS.speak(myText3, TextToSpeech.QUEUE_ADD, null);
             }
             myTTS.setSpeechRate(1f);
             String textOut = "현재 설정의 저장을 원하시면 저장, 원하시지 않으면 뒤로 를 말해주세요.";
             myTTS.speak(textOut, TextToSpeech.QUEUE_ADD, null);
+
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     placeLayout.performClick();
                 }
-            }, 500);
-        }else if(text.equals(bs.get(1).getText().toString())){
+            }, 10000);
+        }
+
+        else if(text.equals(bs.get(1).getText().toString())){
             Intent i = new Intent(Setting.this, MainActivity.class);
             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
             i.putExtra("place", place);
@@ -252,8 +256,10 @@ public class Setting extends AppCompatActivity implements OnInitListener {
                 public void run() {
                     startActivity(i_save);
                 }
-            }, 300);
-        } else {
+            }, 1900);
+        }
+
+        else {
             new Handler().postDelayed(new Runnable() {
 
                 @Override
