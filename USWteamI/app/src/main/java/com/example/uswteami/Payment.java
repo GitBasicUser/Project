@@ -451,6 +451,15 @@ public class Payment extends AppCompatActivity {
                             //System.exit(1);
                         }
 
+                        else {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 1000);
+                        }
+
                         for(String n : pay_name){
                             k++;
                             if(res.equals(n)) {
@@ -540,6 +549,14 @@ public class Payment extends AppCompatActivity {
                                     mVoiceBtn.performClick();
                                 }
                             }, 4600);
+                        }
+                        else {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 1000);
                         }
 
                     }
