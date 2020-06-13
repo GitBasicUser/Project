@@ -3,6 +3,8 @@ package com.example.uswteami;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.media.MediaPlayer;
 import android.nfc.Tag;
 import android.os.AsyncTask;
@@ -27,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -57,6 +60,7 @@ public class Chicken extends AppCompatActivity {
     ListView mlistView;
     ListViewAdapter adapter;
 
+    private static String ad;
     private static String place;
     private static String stt;
     private String sh;
@@ -65,11 +69,14 @@ public class Chicken extends AppCompatActivity {
 
     private Button back;
     private List<Button> btns = new ArrayList<>();
+    Geocoder m = new Geocoder(Chicken.this);
+    double lat1 = 0, lon1 = 0, lat2 = 0, lon2 = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chicken_layout);
+
 
         place_layout = (TextView) findViewById(R.id.placeLayout);
         mlistView = (ListView) findViewById(R.id.listView_main_list);
@@ -88,6 +95,7 @@ public class Chicken extends AppCompatActivity {
         if (get.getStringExtra("flag_from_main").equals("y")) {
             place = get.getStringExtra("place");
             stt = get.getStringExtra("sttSwitch");
+            ad = get.getStringExtra("address");
             place_layout.setText(place);
         }
         if (!get.getStringExtra("shop").equals("n")) {
@@ -102,6 +110,17 @@ public class Chicken extends AppCompatActivity {
 
             }
         }
+
+        try{
+            List<Address> mR = m.getFromLocationName(ad, 1);
+            lat1 = mR.get(0).getLatitude();
+            lon1 = mR.get(0).getLongitude();
+            Log.d(TAG, "onComplete: " + lat1 + lon1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(TAG, "fail");
+        }
+
         if (stt.equals("y")) {
             myTTS = new TextToSpeech(this, new OnInitListener() {
                 @Override
@@ -313,27 +332,54 @@ public class Chicken extends AppCompatActivity {
                             if(n.equals(name)) f = false;
                         }
                         if(f) {
-                            //mArrayList.add(hashMap);
-                            names.add(name);
-                            shops.put(name, shop);
-                            shopnames.put(shop, name);
-                            adapter.addItem(numb.toString(), name, address);
+                            try{
+                                List<Address> mR = m.getFromLocationName("경기 화성시 봉담읍 와우안길 22 ", 1);
+                                lat2 = mR.get(0).getLatitude();
+                                lon2 = mR.get(0).getLongitude();
+                                Log.d(TAG, "onComplete: " + lat2 + lon2);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Log.d(TAG, "fail");
+                            }
 
-                            k++;
-                            i = -1;
-                            commant.remove(0);
+                            String rs = calcDistance(lat1, lon1, lat2, lon2);
+
+                            if(Integer.parseInt(rs) <= 20000) {
+                                names.add(name);
+                                shops.put(name, shop);
+                                shopnames.put(shop, name);
+                                adapter.addItem(numb.toString(), name, address);
+
+                                k++;
+                                i = -1;
+                                commant.remove(0);
+                            }
                         }else continue;
                     }
                 }else {
+                    try{
+                        List<Address> mR = m.getFromLocationName("경기 화성시 봉담읍 와우안길 22 ", 1);
+                        lat2 = mR.get(0).getLatitude();
+                        lon2 = mR.get(0).getLongitude();
+                        Log.d(TAG, "onComplete: " + lat2 + lon2);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.d(TAG, "fail");
+                    }
+
+                    String rs = calcDistance(lat1, lon1, lat2, lon2);
+
                     HashMap<String, String> hashMap = new HashMap<>();
                     hashMap.put(TAG_ID, num.toString());
                     hashMap.put(TAG_NAME, name);
                     hashMap.put(TAG_ADDRESS, address);
 
-                    names.add(name);
-                    shops.put(name, shop);
-                    shopnames.put(shop, name);
-                    adapter.addItem(num.toString(), name, address);
+                    if(Integer.parseInt(rs) <= 20000) {
+                        names.add(name);
+                        shops.put(name, shop);
+                        shopnames.put(shop, name);
+                        adapter.addItem(num.toString(), name, address);
+                    }
                 }
             }
 
@@ -343,6 +389,28 @@ public class Chicken extends AppCompatActivity {
             Log.d(TAG, "showResult : ", e);
         }
 
+    }
+
+    public static String calcDistance(double lat1, double lon1, double lat2, double lon2){
+        double EARTH_R, Rad, radLat1, radLat2, radDist;
+        double distance, ret;
+
+        EARTH_R = 6371000.0;
+        Rad = Math.PI/180;
+        radLat1 = Rad * lat1;
+        radLat2 = Rad * lat2;
+        radDist = Rad * (lon1 - lon2);
+
+        distance = Math.sin(radLat1) * Math.sin(radLat2);
+        distance = distance + Math.cos(radLat1) * Math.cos(radLat2) * Math.cos(radDist);
+        ret = EARTH_R * Math.acos(distance);
+
+        double rslt = Math.round(Math.round(ret) / 1000);
+        //String result = rslt + " km";
+        //if(rslt == 0) result = Math.round(ret) +" m";
+        String result = Math.round(ret) + "";
+
+        return result;
     }
 
     private void speak() {

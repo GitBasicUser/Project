@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> pay_name = new ArrayList<>();
     private ArrayList<String> pay_price = new ArrayList<>();
     private ArrayList<String> pay_content = new ArrayList<>();
+    private static String ad = "경기도 화성시 봉담읍 와우안길 17";
     int k = 0;
     Button aa;
     private int a =0;
@@ -193,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
                     j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
                     j.putExtra("place", place);
                     j.putExtra("shop", "치킨");
+                    j.putExtra("address", ad);
                     j.putExtra("flag_from_main", "y");
                     j.putExtra("sttSwitch", sttSwitch);
                     startActivity(j);
@@ -361,6 +363,7 @@ public class MainActivity extends AppCompatActivity {
                             }, 48000);
                         } else if (result.get(0).equals("종료")) {
                             sttSwitch = "n";
+                            Toast.makeText(MainActivity.this, "음성인식을 종료합니다.", Toast.LENGTH_LONG).show();
                         } else if(result.get(0).equals("주문내역")){
                             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
@@ -426,6 +429,7 @@ public class MainActivity extends AppCompatActivity {
                 j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
                 j.putExtra("shop", text);
                 j.putExtra("flag_from_main", "y");
+                j.putExtra("address", ad);
                 j.putExtra("place", place);
                 j.putExtra("sttSwitch", sttSwitch);
                 startActivity(j);
