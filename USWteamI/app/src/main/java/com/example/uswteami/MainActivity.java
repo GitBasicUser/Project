@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private TextToSpeech myTTS;
     private static String sttSwitch = "y";
 
+    private int a =0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -246,23 +248,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         btsClick(result.get(0));
                     }
-                    else {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mVoiceBtn.performClick();
-                            }
-                        }, 1000);
-                    }
+
                     break;
-                }
-                else {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mVoiceBtn.performClick();
-                        }
-                    }, 1000);
                 }
             }
 
@@ -282,13 +269,16 @@ public class MainActivity extends AppCompatActivity {
     private void btsClick (String text) {
         flag++;
         if (text.equals("설정")) {
+            a=1;
             n++;
             Intent i = new Intent(MainActivity.this, Setting.class);
             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
             i.putExtra("place", place);
             i.putExtra("sttSwitch", sttSwitch);
             startActivity(i);
+
         } else if (text.equals("치킨") || text.equals("피자")) {
+            a=1;
             Intent j = new Intent(MainActivity.this, Chicken.class);
             j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
             j.putExtra("shop", text);
@@ -296,8 +286,17 @@ public class MainActivity extends AppCompatActivity {
             j.putExtra("place", place);
             j.putExtra("sttSwitch", sttSwitch);
             startActivity(j);
+
         }
 
+        else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mVoiceBtn.performClick();
+                }
+            }, 1000);
+        }
     }
 
 }
