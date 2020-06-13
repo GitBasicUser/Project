@@ -813,6 +813,15 @@ public class Menu extends AppCompatActivity {
                         if(a==1) break;
                     }
 
+                    else {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 1000);
+                    }
+
                     break;
                 }else{
                     new Handler().postDelayed(new Runnable() {
