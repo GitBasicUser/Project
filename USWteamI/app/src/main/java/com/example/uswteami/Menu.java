@@ -734,7 +734,7 @@ public class Menu extends AppCompatActivity {
                             public void run() {
                                 mVoiceBtn.performClick();
                             }
-                        }, 5000+2500*s);
+                        }, 4000+2500*s);
 
                     }else if(res.equals("사이드") || res.equals("싸이드")){
                         s=0;

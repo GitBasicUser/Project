@@ -49,11 +49,8 @@ public class Payment extends AppCompatActivity {
     private Button var;
     private ArrayList<Button> btns = new ArrayList<>();
     private TextView payPrice;
-<<<<<<< HEAD
     private String m;
-=======
     private int s;
->>>>>>> 15c25ffb74591a8b744da7748039602dd424a506
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -352,9 +349,10 @@ public class Payment extends AppCompatActivity {
                     String res = result.get(0).replace(" ", "");
                     int k = -1;
 
+
                     if (menu_name.equals("장바구니")) {
                         if (res.equals("이전")) {
-                            if(m.equals("main")){
+                            if (m.equals("main")) {
                                 Intent i = new Intent(Payment.this, MainActivity.class);
                                 i.putExtra("name", pay_name);
                                 i.putExtra("price", pay_price);
@@ -362,8 +360,7 @@ public class Payment extends AppCompatActivity {
                                 i.putExtra("k", 1);
                                 i.putExtra("flag_from_Payment", "y");
                                 startActivity(i);
-                            }
-                            if (f != 0) {
+                            } else if (f != 0) {
                                 a = 1;
                                 Intent i = new Intent(Payment.this, Menu.class);
                                 i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
@@ -390,23 +387,16 @@ public class Payment extends AppCompatActivity {
                         } else if (res.equals("확인")) {
                             int cnt = 0, pay = 0;
                             String text = "현재 장바구니에는";
-<<<<<<< HEAD
                             if (pay_name.size() == 0) {
                                 myTTS.speak(text + "메뉴가 없습니다.주문 카테고리 이동은 뒤로 입니다.", TextToSpeech.QUEUE_ADD, null);
-                            } else {
-=======
-                            if(pay_name.size() == 0){
-                                myTTS.speak(text + "메뉴가 없습니다.주문 카테고리 이동은 뒤로 입니다.",TextToSpeech.QUEUE_ADD, null);
-
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         mVoiceBtn.performClick();
                                     }
                                 }, 5500);
-                            }else {
-                                s=0;
->>>>>>> 15c25ffb74591a8b744da7748039602dd424a506
+                            } else {
+                                s = 0;
                                 myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
                                 for (String n : pay_name) {
                                     pay += Integer.parseInt(pay_price.get(cnt));
@@ -427,17 +417,11 @@ public class Payment extends AppCompatActivity {
                                     public void run() {
                                         mVoiceBtn.performClick();
                                     }
-                                },11000+2500*s);
+                                }, 11000 + 2500 * s);
                             }
-<<<<<<< HEAD
                         } else if (res.equals("결재") || res.equals("결제")) {
                             if (pay_name.size() == 0) {
                                 myTTS.speak("장바구니에 결제 할 메뉴가 없습니다.주문 카테고리 이동은 뒤로 입니다.", TextToSpeech.QUEUE_ADD, null);
-                            } else {
-=======
-                        }else if(res.equals("결재") || res.equals("결제")){
-                            if(pay_name.size() == 0){
-                                myTTS.speak("장바구니에 결제 할 메뉴가 없습니다.주문 카테고리 이동은 뒤로 입니다.",TextToSpeech.QUEUE_ADD, null);
 
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
@@ -445,8 +429,7 @@ public class Payment extends AppCompatActivity {
                                         mVoiceBtn.performClick();
                                     }
                                 }, 4500);
-                            }else {
->>>>>>> 15c25ffb74591a8b744da7748039602dd424a506
+                            } else {
                                 int pay = 0;
                                 int cnt = 0;
                                 for (int i = 0; i < pay_price.size(); i++) {
@@ -464,7 +447,7 @@ public class Payment extends AppCompatActivity {
                                     public void run() {
                                         mVoiceBtn.performClick();
                                     }
-                                },6800);
+                                }, 6800);
                             }
                         } else if (res.equals("결제승인") || res.equals("결재승인")) {
                             myTTS.speak("결제가 정상적으로 완료 되었 습니다.", TextToSpeech.QUEUE_ADD, null);
@@ -476,12 +459,7 @@ public class Payment extends AppCompatActivity {
                             i.putExtra("content", menu_content);
                             i.putExtra("flag_from_Payment", "y");
                             startActivity(i);
-                        }
-<<<<<<< HEAD
-                        for (String n : pay_name) {
-=======
-
-                        else {
+                        } else {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -490,8 +468,7 @@ public class Payment extends AppCompatActivity {
                             }, 1000);
                         }
 
-                        for(String n : pay_name){
->>>>>>> 15c25ffb74591a8b744da7748039602dd424a506
+                        for (String n : pay_name) {
                             k++;
                             if (res.equals(n)) {
                                 f++;
@@ -515,74 +492,54 @@ public class Payment extends AppCompatActivity {
                             }
                         }
                     } else if (res.equals("이전")) {
-                        if (f != 0) {
-                            a = 1;
-                            Intent i = new Intent(Payment.this, Menu.class);
-                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-                            i.putExtra("flag_from_chicken", "no");
-                            i.putExtra("name", "no");
-                            i.putExtra("flag_delete", "y");
-                            i.putExtra("a", "aaa");
-                            i.putExtra("pay_name", pay_name);
-                            i.putExtra("pay_price", pay_price);
-                            i.putExtra("pay_content", pay_content);
-                            startActivity(i);
-                            if (a == 1) break;
-                        } else {
-                            a = 1;
-                            Intent i = new Intent(Payment.this, Menu.class);
-                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-                            i.putExtra("flag_from_chicken", "no");
-                            i.putExtra("flag_delete", "n");
-<<<<<<< HEAD
-                            i.putExtra("name", "no");
-                            startActivity(i);
-                            if (a == 1) break;
-=======
-                            i.putExtra("name", menu_name);
-                            i.putExtra("price", menu_price);
-                            i.putExtra("content", menu_content);
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    startActivity(i);
-                                }
-                            }, 1800);
+//                        if (f != 0) {
+//                            a = 1;
+//                            Intent i = new Intent(Payment.this, Menu.class);
+//                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+//                            i.putExtra("flag_from_chicken", "no");
+//                            i.putExtra("name", "no");
+//                            i.putExtra("flag_delete", "y");
+//                            i.putExtra("a", "aaa");
+//                            i.putExtra("pay_name", pay_name);
+//                            i.putExtra("pay_price", pay_price);
+//                            i.putExtra("pay_content", pay_content);
+//                            startActivity(i);
+//                            if (a == 1) break;
+//                        } else {
+//                            a = 1;
+//                            final Intent i = new Intent(Payment.this, Menu.class);
+//                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+//                            i.putExtra("flag_from_chicken", "no");
+//                            i.putExtra("flag_delete", "n");
+//                            i.putExtra("name", "no");
+//                            i.putExtra("name", menu_name);
+//                            i.putExtra("price", menu_price);
+//                            i.putExtra("content", menu_content);
+//                            if (a == 1) break;
+//                        }
+                    } else if (res.equals("설명")) {
+                        String text = menu_name + " 메뉴 는  " + menu_content;
+                        myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 3500);
+                    } else if (res.equals("가격")) {
+                        myTTS.setSpeechRate(0.95f);
+                        String text = menu_name + " 메뉴 의 가격 은    " + menu_price + "    원 입니다.";
+                        myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
+                        myTTS.setSpeechRate(1f);
 
-                            if(a==1) break;
-                        } else if (res.equals("설명")) {
-                            String text = menu_name + " 메뉴 는  " + menu_content;
-                            myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
-
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mVoiceBtn.performClick();
-                                }
-                            }, 3500);
-                        } else if (res.equals("가격")) {
-                            myTTS.setSpeechRate(0.95f);
-                            String text = menu_name + " 메뉴 의 가격 은    " + menu_price + "    원 입니다.";
-                            myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
-                            myTTS.setSpeechRate(1f);
-
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mVoiceBtn.performClick();
-                                }
-                            }, 4600);
-                        }
-                        else {
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mVoiceBtn.performClick();
-                                }
-                            }, 1000);
->>>>>>> 15c25ffb74591a8b744da7748039602dd424a506
-                        }
-                    } else if (res.equals("저장")) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 4600);
+                    }
+                 else if (res.equals("저장")) {
                         myTTS.speak("장바구니에 저장 되었 습니다.", TextToSpeech.QUEUE_ADD, null);
                         a = 1;
                         final Intent i = new Intent(Payment.this, Menu.class);

@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,15 +50,13 @@ public class MainActivity extends AppCompatActivity {
     private TextToSpeech myTTS;
     private static String sttSwitch = "y";
 
-<<<<<<< HEAD
     private ArrayList<String> pay_name = new ArrayList<>();
     private ArrayList<String> pay_price = new ArrayList<>();
     private ArrayList<String> pay_content = new ArrayList<>();
     int k = 0;
     Button aa;
-=======
     private int a =0;
->>>>>>> 15c25ffb74591a8b744da7748039602dd424a506
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         btns.add(mVoiceBtn);
         btns.add(settingBtn);
         btns.add(chicken);
+        final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
         Intent get = getIntent();
         if(n != 0) {
@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
         if(sttSwitch.equals("y")) {
             myTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
@@ -113,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                player_s.start();
                                 mVoiceBtn.performClick();
                             }
                         }, 14500);
@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                player_s.start();
                                 mVoiceBtn.performClick();
                             }
                         }, 4000);
@@ -275,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_CODE_SPEECH_INPUT: {
                 if (resultCode == RESULT_OK && null != data) {
+                    final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     if(sttSwitch.equals("y")) {
                         if (result.get(0).equals("다시") || result.get(0).equals("-")) {
@@ -290,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
+                                        player_s.start();
                                         mVoiceBtn.performClick();
                                     }
                                 }, 14500);
@@ -301,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
+                                        player_s.start();
                                         mVoiceBtn.performClick();
                                     }
                                 }, 4500);
@@ -309,26 +313,30 @@ public class MainActivity extends AppCompatActivity {
                             if(flag == 0) {
                                 String order1 = "주문을 원하시면 카테고리에서 메뉴를 말씀해주세요.";
                                 String order2 = "주문 카테고리에는 치킨, 피자 가 있습니다.";
-                                String order3 = "최근 주문하신 메뉴를 다시 주문하시려면 재주문 을 말해주세요.";
+                                String order3 = "최근 주문하신 메뉴를 다시 주문하시려면 주문내역 을 말해주세요.";
 
                                 myTTS.speak(order1, TextToSpeech.QUEUE_FLUSH, null);
                                 myTTS.speak(order2, TextToSpeech.QUEUE_ADD, null);
                                 myTTS.speak(order3, TextToSpeech.QUEUE_ADD, null);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 11500);
                             }else{
-                                String order1 = "치킨, 피자, 또는 재주문 을 말해주세요.";
-
-<<<<<<< HEAD
+                                String order1 = "치킨, 피자, 또는 주문내역 을 말해주세요.";
                                 myTTS.speak(order1, TextToSpeech.QUEUE_ADD, null);
-                            }
-=======
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mVoiceBtn.performClick();
-                                }
-                            }, 8500);
 
->>>>>>> 15c25ffb74591a8b744da7748039602dd424a506
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 4500);
+                            }
                         } else if (result.get(0).equals("사용법")) {
                             String text1 = "해당 배달앱은 음성인식을 적용하여 특정 명령어들로 주문이 가능한 배달앱 입니다.";
                             String text2 = "명령어 입력 후, 안내가 나오지 않고 알림음이 다시 나온다면, 해당 명령어를 천천히 다시 말해주시기 바랍니다.";
@@ -347,12 +355,13 @@ public class MainActivity extends AppCompatActivity {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    player_s.start();
                                     mVoiceBtn.performClick();
                                 }
                             }, 48000);
                         } else if (result.get(0).equals("종료")) {
                             sttSwitch = "n";
-                        } else if(result.get(0).equals("재주문")){
+                        } else if(result.get(0).equals("주문내역")){
                             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
                             pay_name = getStringArrayPref(MainActivity.this, "name");
@@ -371,14 +380,13 @@ public class MainActivity extends AppCompatActivity {
                                 i.putExtra("pay_content", pay_content);
                                 i.putExtra("sttSwitch", sttSwitch);
                                 i.putExtra("where", "main");
-
                                 startActivity(i);
                             }
                         }
                         else {
                             sttSwitch = "y";
+                            btsClick(result.get(0));
                         }
-                        btsClick(result.get(0));
                     }
 
                     break;
@@ -400,38 +408,37 @@ public class MainActivity extends AppCompatActivity {
 
     private void btsClick (String text) {
         flag++;
-        if (text.equals("설정")) {
-            a=1;
-            n++;
-            Intent i = new Intent(MainActivity.this, Setting.class);
-            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-            i.putExtra("place", place);
-            i.putExtra("sttSwitch", sttSwitch);
-            startActivity(i);
+        if(sttSwitch.equals("y")) {
+            final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
+            if (text.equals("설정")) {
+                a = 1;
+                n++;
+                Intent i = new Intent(MainActivity.this, Setting.class);
+                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                i.putExtra("place", place);
+                i.putExtra("sttSwitch", sttSwitch);
+                startActivity(i);
 
-        } else if (text.equals("치킨") || text.equals("피자")) {
-<<<<<<< HEAD
-            n++;
-=======
-            a=1;
->>>>>>> 15c25ffb74591a8b744da7748039602dd424a506
-            Intent j = new Intent(MainActivity.this, Chicken.class);
-            j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
-            j.putExtra("shop", text);
-            j.putExtra("flag_from_main", "y");
-            j.putExtra("place", place);
-            j.putExtra("sttSwitch", sttSwitch);
-            startActivity(j);
+            } else if (text.equals("치킨") || text.equals("피자")) {
+                n++;
+                a = 1;
+                Intent j = new Intent(MainActivity.this, Chicken.class);
+                j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
+                j.putExtra("shop", text);
+                j.putExtra("flag_from_main", "y");
+                j.putExtra("place", place);
+                j.putExtra("sttSwitch", sttSwitch);
+                startActivity(j);
 
-        }
-
-        else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mVoiceBtn.performClick();
-                }
-            }, 1000);
+            } else {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        player_s.start();
+                        mVoiceBtn.performClick();
+                    }
+                }, 1000);
+            }
         }
     }
 
