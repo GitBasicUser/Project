@@ -98,12 +98,14 @@ public class Setting extends AppCompatActivity implements OnInitListener {
                     Intent i = new Intent(Setting.this, MainActivity.class);
                     i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                     i.putExtra("place", place);
+                    i.putExtra("flag_from_Payment", "n");
                     startActivity(i);
                     break;
                 case R.id.btn_save:
                     Intent i_save = new Intent(Setting.this, MainActivity.class);
                     i_save.setFlags(i_save.FLAG_ACTIVITY_CLEAR_TOP);
                     i_save.putExtra("place", placeLayout.getText().toString());
+                    i_save.putExtra("flag_from_Payment", "n");
                     Toast.makeText(Setting.this, "저장되었습니다", Toast.LENGTH_SHORT).show();
                     startActivity(i_save);
 

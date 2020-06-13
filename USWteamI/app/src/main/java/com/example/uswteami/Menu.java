@@ -200,6 +200,7 @@ public class Menu extends AppCompatActivity {
                     i.putExtra("name", adapter.getName(position));
                     i.putExtra("price", price_main.get(adapter.getName(position)));
                     i.putExtra("content", content_main.get(adapter.getName(position)));
+                    i.putExtra("where", "menu");
                     i.putExtra("sttSwitch", stt);
                     flag++;
                     startActivity(i);
@@ -210,6 +211,7 @@ public class Menu extends AppCompatActivity {
                     i.putExtra("name", adapter.getName(position));
                     i.putExtra("price", price_side.get(adapter.getName(position)));
                     i.putExtra("content", content_side.get(adapter.getName(position)));
+                    i.putExtra("where", "menu");
                     i.putExtra("sttSwitch", stt);
                     flag++;
                     startActivity(i);
@@ -220,6 +222,7 @@ public class Menu extends AppCompatActivity {
                     i.putExtra("name", adapter.getName(position));
                     i.putExtra("price", price_soda.get(adapter.getName(position)));
                     i.putExtra("content", content_soda.get(adapter.getName(position)));
+                    i.putExtra("where", "menu");
                     i.putExtra("sttSwitch", stt);
                     flag++;
                     startActivity(i);
@@ -237,6 +240,7 @@ public class Menu extends AppCompatActivity {
                 i.putExtra("pay_price", pay_price);
                 i.putExtra("pay_content", pay_content);
                 i.putExtra("sttSwitch", stt);
+                i.putExtra("where", "menu");
 
                 startActivity(i);
             }
@@ -665,12 +669,8 @@ public class Menu extends AppCompatActivity {
                             i.putExtra("name", n);
                             i.putExtra("price", price_main.get(n));
                             i.putExtra("content", content_main.get(n));
-
-                            Toast.makeText(Menu.this, n, Toast.LENGTH_SHORT).show();
-                            Toast.makeText(Menu.this, price_main.get(n), Toast.LENGTH_SHORT).show();
-                            Toast.makeText(Menu.this, content_main.get(n), Toast.LENGTH_SHORT).show();
-
                             i.putExtra("sttSwitch", stt);
+                            i.putExtra("where", "menu");
                             flag++;
                             startActivity(i);
                         }
@@ -684,12 +684,8 @@ public class Menu extends AppCompatActivity {
                             i.putExtra("name", n);
                             i.putExtra("price", price_side.get(n));
                             i.putExtra("content", content_side.get(n));
-
-                            Toast.makeText(Menu.this, n, Toast.LENGTH_SHORT).show();
-                            Toast.makeText(Menu.this, price_side.get(n), Toast.LENGTH_SHORT).show();
-                            Toast.makeText(Menu.this, content_side.get(n), Toast.LENGTH_SHORT).show();
-
                             i.putExtra("sttSwitch", stt);
+                            i.putExtra("where", "menu");
                             flag++;
                             startActivity(i);
                         }
@@ -704,6 +700,7 @@ public class Menu extends AppCompatActivity {
                             i.putExtra("price", price_soda.get(n));
                             i.putExtra("content", content_soda.get(n));
                             i.putExtra("sttSwitch", stt);
+                            i.putExtra("where", "menu");
                             flag++;
                             startActivity(i);
                         }
@@ -758,6 +755,7 @@ public class Menu extends AppCompatActivity {
                         i.putExtra("pay_price", pay_price);
                         i.putExtra("pay_content", pay_content);
                         i.putExtra("sttSwitch", stt);
+                        i.putExtra("where", "menu");
 
                         startActivity(i);
                         if(a==1) break;

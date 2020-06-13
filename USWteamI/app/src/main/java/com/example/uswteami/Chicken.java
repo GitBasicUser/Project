@@ -165,6 +165,7 @@ public class Chicken extends AppCompatActivity {
                 case R.id.back:
                     Intent i = new Intent(Chicken.this, MainActivity.class);
                     i.putExtra("place", place);
+                    i.putExtra("flag_from_Payment", "n");
                     startActivity(i);
                     break;
             }
@@ -326,7 +327,6 @@ public class Chicken extends AppCompatActivity {
                     hashMap.put(TAG_NAME, name);
                     hashMap.put(TAG_ADDRESS, address);
 
-                    //mArrayList.add(hashMap);
                     names.add(name);
                     shops.put(name, shop);
                     shopnames.put(shop, name);
@@ -334,13 +334,6 @@ public class Chicken extends AppCompatActivity {
                 }
             }
 
-//            ListAdapter adapter = new SimpleAdapter(
-//                    Chicken.this, mArrayList, R.layout.item_list_place,
-//                    new String[]{TAG_ID,TAG_NAME, TAG_ADDRESS},
-//                    new int[]{R.id.num, R.id.name, R.id.address}
-//            );
-
-            //mlistView.setAdapter(adapter);
 
         } catch (JSONException e) {
 
@@ -406,6 +399,7 @@ public class Chicken extends AppCompatActivity {
                     if(result.get(0).equals("이전")){
                         Intent i = new Intent(Chicken.this, MainActivity.class);
                         i.putExtra("place", place);
+                        i.putExtra("flag_from_Payment", "n");
                         startActivity(i);
                     }
                     else if(result.get(0).equals("다시") || result.get(0).equals("-")){

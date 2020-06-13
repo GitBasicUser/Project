@@ -1,12 +1,16 @@
 package com.example.uswteami;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
@@ -18,9 +22,15 @@ import android.app.Activity;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +49,12 @@ public class MainActivity extends AppCompatActivity {
     private TextToSpeech myTTS;
     private static String sttSwitch = "y";
 
+    private ArrayList<String> pay_name = new ArrayList<>();
+    private ArrayList<String> pay_price = new ArrayList<>();
+    private ArrayList<String> pay_content = new ArrayList<>();
+    int k = 0;
+    Button aa;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,15 +63,34 @@ public class MainActivity extends AppCompatActivity {
         mVoiceBtn = findViewById(R.id.voiceBtn);
         settingBtn = findViewById(R.id.settingBtn);
         chicken = findViewById(R.id.btn_chicken);
+        aa = (Button)findViewById(R.id.aa);
         btns.add(mVoiceBtn);
         btns.add(settingBtn);
         btns.add(chicken);
 
+        Intent get = getIntent();
+        if(n != 0) {
+            if (get.getStringExtra("flag_from_Payment").equals("y")) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                SharedPreferences.Editor editor = prefs.edit();
 
-        if (n != 0) {
-            Intent get = getIntent();
-            place = get.getStringExtra("place");
+                pay_name = (ArrayList<String>) get.getSerializableExtra("name");
+                pay_price = (ArrayList<String>) get.getSerializableExtra("price");
+                pay_content = (ArrayList<String>) get.getSerializableExtra("content");
+                k = get.getIntExtra("k", 0);
+                editor.putInt("k", k);
+
+                setStringArrayPref(MainActivity.this, "name", pay_name);
+                setStringArrayPref(MainActivity.this, "price", pay_price);
+                setStringArrayPref(MainActivity.this, "content", pay_content);
+
+                editor.apply();
+
+            } else {
+                place = get.getStringExtra("place");
+            }
         }
+
         final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
         if(sttSwitch.equals("y")) {
@@ -98,6 +133,33 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i<btns.size(); i++){
             btns.get(i).setOnClickListener(onClick);
         }
+
+        aa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+
+                pay_name = getStringArrayPref(MainActivity.this, "name");
+                pay_price = getStringArrayPref(MainActivity.this, "price");
+                pay_content = getStringArrayPref(MainActivity.this, "content");
+                k = prefs.getInt("k", 0);
+
+                if(k == 0){
+                    Toast.makeText(MainActivity.this, "주문 내역이 존재하지 않습니다.", Toast.LENGTH_LONG).show();
+                }else{
+                    Intent i = new Intent(MainActivity.this, Payment.class);
+                    i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.putExtra("name", "장바구니");
+                    i.putExtra("pay_name", pay_name);
+                    i.putExtra("pay_price", pay_price);
+                    i.putExtra("pay_content", pay_content);
+                    i.putExtra("sttSwitch", sttSwitch);
+                    i.putExtra("where", "main");
+
+                    startActivity(i);
+                }
+            }
+        });
     }
 
     View.OnClickListener onClick = new View.OnClickListener() {
@@ -113,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(i);
                     break;
                 case R.id.btn_chicken:
+                    n++;
                     Intent j = new Intent(MainActivity.this, Chicken.class);
                     j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
                     j.putExtra("place", place);
@@ -128,6 +191,40 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    private void setStringArrayPref(Context context, String key, ArrayList<String> values) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        JSONArray a = new JSONArray();
+        for (int i = 0; i < values.size(); i++) {
+            a.put(values.get(i));
+        }
+        if (!values.isEmpty()) {
+            editor.putString(key, a.toString());
+        } else {
+            editor.putString(key, null);
+        }
+        editor.apply();
+    }
+
+    private ArrayList<String> getStringArrayPref(Context context, String key) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String json = prefs.getString(key, null);
+        ArrayList<String> urls = new ArrayList<String>();
+        if (json != null) {
+            try {
+                JSONArray a = new JSONArray(json);
+                for (int i = 0; i < a.length(); i++) {
+                    String url = a.optString(i);
+                    urls.add(url);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return urls;
+    }
+
 
     private void speak() {
         //intent to show speech to text dialog 텍스트 대화 상자에 음성 표시
@@ -183,12 +280,19 @@ public class MainActivity extends AppCompatActivity {
                                 myTTS.speak(myText, TextToSpeech.QUEUE_ADD, null);
                             }
                         } else if (result.get(0).equals("주문")) {
-                            String order1 = "주문을 원하시면 카테고리에서 메뉴를 말씀해주세요.";
-                            String order2 = "주문 카테고리에는 치킨, 피자 가 있습니다.";
+                            if(flag == 0) {
+                                String order1 = "주문을 원하시면 카테고리에서 메뉴를 말씀해주세요.";
+                                String order2 = "주문 카테고리에는 치킨, 피자 가 있습니다.";
+                                String order3 = "최근 주문하신 메뉴를 다시 주문하시려면 재주문 을 말해주세요.";
 
-                            myTTS.speak(order1, TextToSpeech.QUEUE_FLUSH, null);
-                            myTTS.speak(order2, TextToSpeech.QUEUE_ADD, null);
+                                myTTS.speak(order1, TextToSpeech.QUEUE_FLUSH, null);
+                                myTTS.speak(order2, TextToSpeech.QUEUE_ADD, null);
+                                myTTS.speak(order3, TextToSpeech.QUEUE_ADD, null);
+                            }else{
+                                String order1 = "치킨, 피자, 또는 재주문 을 말해주세요.";
 
+                                myTTS.speak(order1, TextToSpeech.QUEUE_ADD, null);
+                            }
                         } else if (result.get(0).equals("사용법")) {
                             String text1 = "해당 배달앱은 음성인식을 적용하여 특정 명령어들로 주문이 가능한 배달앱 입니다.";
                             String text2 = "명령어 입력 후, 안내가 나오지 않고 알림음이 다시 나온다면 해당 명령어를 천천히 다시 말해주시기 바랍니다.";
@@ -205,7 +309,30 @@ public class MainActivity extends AppCompatActivity {
                             myTTS.setSpeechRate(1f);
                         } else if (result.get(0).equals("종료")) {
                             sttSwitch = "n";
-                        } else {
+                        } else if(result.get(0).equals("재주문")){
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+
+                            pay_name = getStringArrayPref(MainActivity.this, "name");
+                            pay_price = getStringArrayPref(MainActivity.this, "price");
+                            pay_content = getStringArrayPref(MainActivity.this, "content");
+                            k = prefs.getInt("k", 0);
+
+                            if(k == 0){
+                                myTTS.speak("주문 내역이 비어있습니다. 한 번이라도 결제승인을 하신 후 사용해주세요.", TextToSpeech.QUEUE_ADD, null);
+                            }else{
+                                Intent i = new Intent(MainActivity.this, Payment.class);
+                                i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.putExtra("name", "장바구니");
+                                i.putExtra("pay_name", pay_name);
+                                i.putExtra("pay_price", pay_price);
+                                i.putExtra("pay_content", pay_content);
+                                i.putExtra("sttSwitch", sttSwitch);
+                                i.putExtra("where", "main");
+
+                                startActivity(i);
+                            }
+                        }
+                        else {
                             sttSwitch = "y";
                         }
                         btsClick(result.get(0));
@@ -237,6 +364,7 @@ public class MainActivity extends AppCompatActivity {
             i.putExtra("sttSwitch", sttSwitch);
             startActivity(i);
         } else if (text.equals("치킨") || text.equals("피자")) {
+            n++;
             Intent j = new Intent(MainActivity.this, Chicken.class);
             j.setFlags(j.FLAG_ACTIVITY_CLEAR_TOP);
             j.putExtra("shop", text);
