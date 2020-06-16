@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="45dp"
+            android:layout_height="50dp"
+            android:fontFamily="@font/bazzi"
+            android:background="@drawable/buttonround"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/ic_back"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="리뷰 가능 음식점"
+            android:fontFamily="@font/bazzi"
+            android:textSize="30dp"
+            android:layout_weight="1"
+            android:gravity="center"/>
+
+        <ImageButton
+            android:id="@+id/voiceBtn"
+            android:layout_width="45dp"
+            android:layout_height="50dp"
+            android:background="@drawable/buttonround"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_mic"
+            />
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        android:id="@+id/listView" />
+
+</LinearLayout>
