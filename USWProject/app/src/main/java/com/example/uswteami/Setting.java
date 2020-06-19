@@ -35,6 +35,7 @@ public class Setting extends AppCompatActivity implements OnInitListener {
     private TextToSpeech myTTS;
     private static String place;
     private static String stt;
+    private static String stth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class Setting extends AppCompatActivity implements OnInitListener {
         Intent getp = getIntent();
         place = getp.getStringExtra("place");
         stt = getp.getStringExtra("sttSwitch");
+        stth = getp.getStringExtra("sttHow");
 
         placeLayoutChange = (Button)findViewById(R.id.placeLayoutChange);
         text = (TextView) findViewById(R.id.text);
@@ -57,7 +59,7 @@ public class Setting extends AppCompatActivity implements OnInitListener {
         bs.add(save);
 
 
-        if(stt.equals("y")) {
+        if(stth.equals("y")){
             myTTS = new TextToSpeech(this, this);
 
             final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
@@ -66,11 +68,55 @@ public class Setting extends AppCompatActivity implements OnInitListener {
             save.setOnClickListener(onClick);
             placeLayoutChange.setOnClickListener(onClick);
 
+
+
             mVoiceBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     player_s.start();
                     speak();
+                }
+            });
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mVoiceBtn.performClick();
+                }
+            }, 1000);
+        }else if(stt.equals("y")) {
+
+
+            final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
+
+            back.setOnClickListener(onClick);
+            save.setOnClickListener(onClick);
+            placeLayoutChange.setOnClickListener(onClick);
+
+            myTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    String myText1 = "설정입니다.";
+                    String text2 = "매장 나열 방식의 교체를 원하시면 매장 을 말해주세요.";
+                    myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
+                    myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mVoiceBtn.performClick();
+                        }
+                    }, 6000);
+
+                    mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            player_s.start();
+                            speak();
+                        }
+                    });
+
+
                 }
             });
 
@@ -118,17 +164,6 @@ public class Setting extends AppCompatActivity implements OnInitListener {
 
     @Override
     public void onInit(int status) {
-        String myText1 = "설정입니다.";
-        String text2 = "매장 나열 방식의 교체를 원하시면 매장 을 말해주세요.";
-        myTTS.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
-        myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mVoiceBtn.performClick();
-            }
-        }, 6000);
     }
 
 
@@ -230,28 +265,51 @@ public class Setting extends AppCompatActivity implements OnInitListener {
                 String myText2 = "현재 매장 나열 방식은 " + placeLayout.getText().toString() + "입니다.";
                 myTTS.setSpeechRate(0.95f);
                 myTTS.speak(myText2, TextToSpeech.QUEUE_ADD, null);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mVoiceBtn.performClick();
+                    }
+                }, 2000);
             }else if(placeLayout.getText().toString().equals("리뷰 많은 순")){
                 placeLayout.setText("별점순");
                 String myText3 = "현재 매장 나열 방식은 " + placeLayout.getText().toString() + "입니다.";
                 myTTS.setSpeechRate(0.95f);
                 myTTS.speak(myText3, TextToSpeech.QUEUE_ADD, null);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mVoiceBtn.performClick();
+                    }
+                }, 2000);
             }
             else {
                 placeLayout.setText("앱 지정순");
                 String myText3 = "현재 매장 나열 방식은 " + placeLayout.getText().toString() + "입니다.";
                 myTTS.setSpeechRate(0.95f);
                 myTTS.speak(myText3, TextToSpeech.QUEUE_ADD, null);
-            }
-            myTTS.setSpeechRate(1f);
-            String textOut = "현재 설정의 저장을 원하시면 저장, 원하시지 않으면 뒤로 를 말해주세요.";
-            myTTS.speak(textOut, TextToSpeech.QUEUE_ADD, null);
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mVoiceBtn.performClick();
-                }
-            }, 10000);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mVoiceBtn.performClick();
+                    }
+                }, 2000);
+            }
+            if(!stth.equals("y")) {
+                myTTS.setSpeechRate(1f);
+                String textOut = "현재 설정의 저장을 원하시면 저장, 원하시지 않으면 뒤로 를 말해주세요.";
+                myTTS.speak(textOut, TextToSpeech.QUEUE_ADD, null);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mVoiceBtn.performClick();
+                    }
+                }, 11000);
+            }
         }
 
         else if(text.equals(bs.get(1).getText().toString())){

@@ -49,6 +49,7 @@ public class Payment extends AppCompatActivity {
 
     private int a=0;
     private String stt;
+    private String stth;
     private ImageButton back;
     private Button var;
     private ArrayList<Button> bs = new ArrayList<>();
@@ -71,6 +72,7 @@ public class Payment extends AppCompatActivity {
         menu_price = get.getStringExtra("price");
         menu_content = get.getStringExtra("content");
         stt = get.getStringExtra("sttSwitch");
+        stth = get.getStringExtra("sttHow");
         m = get.getStringExtra("where");
         sh =  get.getStringExtra("shop");
 
@@ -89,7 +91,7 @@ public class Payment extends AppCompatActivity {
 
 
         if(menu_name.equals("장바구니")){
-            Toast.makeText(Payment.this, sh, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(Payment.this, sh, Toast.LENGTH_SHORT).show();
             var.setText("결제");
             Integer p = 0;
             for(int i = 0; i<pay_price.size(); i++){
@@ -100,7 +102,28 @@ public class Payment extends AppCompatActivity {
             Toast.makeText(Payment.this, "길게누르면 메뉴 삭제", Toast.LENGTH_LONG).show();
         }
 
-        if(stt.equals("y")) {
+        if(stth.equals("y")){
+            myTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                }
+            });
+
+            mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    player_s.start();
+                    speak();
+                }
+            });
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mVoiceBtn.performClick();
+                }
+            }, 1000);
+        }else if(stt.equals("y")) {
             myTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
                 @Override
                 public void onInit(int status) {
@@ -480,23 +503,17 @@ public class Payment extends AppCompatActivity {
                                 }, 6800);
                             }
                         } else if (res.equals("결제승인") || res.equals("결재승인")) {
-                            myTTS.speak("결제가 정상적으로 완료 되었 습니다.", TextToSpeech.QUEUE_ADD, null);
+                            Toast.makeText(Payment.this, "결제가 완료되었습니다.", Toast.LENGTH_LONG).show();
                             Intent i = new Intent(Payment.this, MainActivity.class);
-                            i.putExtra("name", menu_name);
-                            i.putExtra("price", menu_price);
-                            i.putExtra("content", menu_content);
+                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("name", pay_name);
+                            i.putExtra("price", pay_price);
+                            i.putExtra("content", pay_content);
                             i.putExtra("k", 1);
                             i.putExtra("shop",sh);
                             i.putExtra("flag_from_Review", "n");
                             i.putExtra("flag_from_Payment", "y");
                             startActivity(i);
-
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mVoiceBtn.performClick();
-                                }
-                            }, 4000);
                         } else {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
@@ -523,7 +540,7 @@ public class Payment extends AppCompatActivity {
                                     public void run() {
                                         mVoiceBtn.performClick();
                                     }
-                                }, 2000);
+                                }, 3000);
 
                                 showResult(menu_name);
                                 break;

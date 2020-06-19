@@ -57,6 +57,7 @@ public class Menu extends AppCompatActivity {
     private String flag_from_chicken;
     private static String sh;
     private static String stt;
+    private static String stth;
 
     // Intent로 받아오는 변수(Menu.java로부터)
     private static ArrayList<String> pay_name = new ArrayList<>();
@@ -69,6 +70,7 @@ public class Menu extends AppCompatActivity {
     int num_main = 1;
     int num_side = 1;
     int num_soda = 1;
+    int listViewSize = 0;
     ArrayList<HashMap<String, String>> mArrayList_main;
     ArrayList<HashMap<String, String>> mArrayList_side;
     ArrayList<HashMap<String, String>> mArrayList_soda;
@@ -91,6 +93,7 @@ public class Menu extends AppCompatActivity {
     HashMap<String, String> content_soda = new HashMap<>();
 
     private int a=0;
+    private int b=0;
     private ImageButton pay;
     private int s;
     private TextView shopName;
@@ -98,6 +101,7 @@ public class Menu extends AppCompatActivity {
     private static String q = "y";
     Button ord;
     Button review;
+    private String r = "n";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +131,7 @@ public class Menu extends AppCompatActivity {
             shopname = get.getStringExtra("shopname");
             sh = get.getStringExtra("a");
             stt = get.getStringExtra("sttSwitch");
+            stth = get.getStringExtra("sttHow");
         }
 
         shopName.setText(shopname);
@@ -164,12 +169,19 @@ public class Menu extends AppCompatActivity {
 
         if(flag != 0){
             Intent g = getIntent();
-            if(!g.getStringExtra("name").equals("no")){
+            if(flag_from_chicken.equals("y")) {
+                shop = get.getStringExtra("shop");
+                shopname = get.getStringExtra("shopname");
+                sh = get.getStringExtra("a");
+                stt = get.getStringExtra("sttSwitch");
+                stth = get.getStringExtra("sttHow");
+            }else if(!g.getStringExtra("name").equals("no")){
                 pay_name.add(g.getStringExtra("name"));
                 pay_price.add(g.getStringExtra("price"));
                 pay_content.add(g.getStringExtra("content"));
             }
-            if(g.getStringExtra("flag_delete").equals("y")){
+            if(flag_from_chicken.equals("y")) {}
+            else if(g.getStringExtra("flag_delete").equals("y")){
                 pay_name = (ArrayList<String>) g.getSerializableExtra("pay_name");
                 pay_price = (ArrayList<String>) g.getSerializableExtra("pay_price");
                 pay_content = (ArrayList<String>) g.getSerializableExtra("pay_content");
@@ -185,6 +197,8 @@ public class Menu extends AppCompatActivity {
         mArrayList_soda = new ArrayList<>();
 
         if(q.equals("y")) {
+            listViewSize = 0;
+
             GetData_main task1 = new GetData_main();
             task1.execute("http://uswteami.dothome.co.kr/my/board/chicken/menu/json_main.php");
 
@@ -195,18 +209,40 @@ public class Menu extends AppCompatActivity {
             task3.execute("http://uswteami.dothome.co.kr/my/board/chicken/menu/json_soda.php");
 
         }else{
+            listViewSize = 0;
             GetData_review task = new GetData_review();
             task.execute("http://uswteami.dothome.co.kr/my/review/shop/json.php");
         }
 
-        if(stt.equals("y")) {
+        if(stth.equals("y")){
+            myTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                }
+            });
+
+            mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    player_s.start();
+                    speak();
+                }
+            });
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mVoiceBtn.performClick();
+                }
+            }, 2000);
+        }else if(stt.equals("y")) {
             myTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
                 @Override
                 public void onInit(int status) {
                     if (flag == 0) {
                         String text1 = shopname + " 입니다.";
                         String text2 = "메인메뉴는 메인, 사이드메뉴는 사이드, 음료는 음료, 또는 메뉴 이름 을 말해주세요.";
-                        String text3 = "장바구니 이동은 구매 입니다.";
+                        String text3 = "장바구니 이동은 구매, 리뷰확인은 리뷰 입니다.";
 
                         myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
                         myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
@@ -217,7 +253,7 @@ public class Menu extends AppCompatActivity {
                             public void run() {
                                 mVoiceBtn.performClick();
                             }
-                        }, 10000);
+                        }, 12000);
 
                     } else {
                         String text1 = shopname + " 입니다.";
@@ -231,7 +267,7 @@ public class Menu extends AppCompatActivity {
                             public void run() {
                                 mVoiceBtn.performClick();
                             }
-                        }, 3500);
+                        }, 4500);
                     }
                 }
             });
@@ -262,6 +298,7 @@ public class Menu extends AppCompatActivity {
                     i.putExtra("content", content_main.get(adapter.getName(position)));
                     i.putExtra("where", "menu");
                     i.putExtra("sttSwitch", stt);
+                    i.putExtra("sttHow", stth);
                     flag++;
                     startActivity(i);
                 }else if(position <= price_main.size() + price_side.size() + 2){
@@ -273,6 +310,7 @@ public class Menu extends AppCompatActivity {
                     i.putExtra("content", content_side.get(adapter.getName(position)));
                     i.putExtra("where", "menu");
                     i.putExtra("sttSwitch", stt);
+                    i.putExtra("sttHow", stth);
                     flag++;
                     startActivity(i);
                 }else{
@@ -284,6 +322,7 @@ public class Menu extends AppCompatActivity {
                     i.putExtra("content", content_soda.get(adapter.getName(position)));
                     i.putExtra("where", "menu");
                     i.putExtra("sttSwitch", stt);
+                    i.putExtra("sttHow", stth);
                     flag++;
                     startActivity(i);
                 }
@@ -300,6 +339,7 @@ public class Menu extends AppCompatActivity {
                 i.putExtra("pay_price", pay_price);
                 i.putExtra("pay_content", pay_content);
                 i.putExtra("sttSwitch", stt);
+                i.putExtra("sttHow", stth);
                 i.putExtra("where", "menu");
                 i.putExtra("shop",shopname);
 
@@ -797,6 +837,7 @@ public class Menu extends AppCompatActivity {
 
                 if(shopname.equals(name)) {
                     rAdapter.addItem(grade, date, content);
+                    listViewSize++;
                 }
                 else continue;
             }
@@ -857,6 +898,7 @@ public class Menu extends AppCompatActivity {
                             i.putExtra("price", price_main.get(n));
                             i.putExtra("content", content_main.get(n));
                             i.putExtra("sttSwitch", stt);
+                            i.putExtra("sttHow", stth);
                             i.putExtra("where", "menu");
                             flag++;
                             startActivity(i);
@@ -872,6 +914,7 @@ public class Menu extends AppCompatActivity {
                             i.putExtra("price", price_side.get(n));
                             i.putExtra("content", content_side.get(n));
                             i.putExtra("sttSwitch", stt);
+                            i.putExtra("sttHow", stth);
                             i.putExtra("where", "menu");
                             flag++;
                             startActivity(i);
@@ -887,6 +930,7 @@ public class Menu extends AppCompatActivity {
                             i.putExtra("price", price_soda.get(n));
                             i.putExtra("content", content_soda.get(n));
                             i.putExtra("sttSwitch", stt);
+                            i.putExtra("sttHow", stth);
                             i.putExtra("where", "menu");
                             flag++;
                             startActivity(i);
@@ -894,14 +938,14 @@ public class Menu extends AppCompatActivity {
                     }
                     if (a==1) break;
 
-                    if(res.equals("메인")){
+                    if(res.equals("메인") || res.equals("내일")){
                         s=0;
                         String text1 = "메인메뉴에는";
                         myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
                         for(String n : names_main){
                             myTTS.setSpeechRate(0.95f);
                             myTTS.speak(n + "  ", TextToSpeech.QUEUE_ADD, null);
-                            s++;
+                            s += n.length();
                         }
                         myTTS.setSpeechRate(1f);
                         myTTS.speak("가 있습니다.원하시는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
@@ -911,7 +955,7 @@ public class Menu extends AppCompatActivity {
                             public void run() {
                                 mVoiceBtn.performClick();
                             }
-                        }, 4000+2500*s);
+                        }, 4000+300*s);
 
                     }else if(res.equals("사이드") || res.equals("싸이드")){
                         s=0;
@@ -920,7 +964,7 @@ public class Menu extends AppCompatActivity {
                         for(String n : names_side){
                             myTTS.setSpeechRate(0.95f);
                             myTTS.speak(n + "  ", TextToSpeech.QUEUE_ADD, null);
-                            s++;
+                            s += n.length();
                         }
                         myTTS.setSpeechRate(1f);
                         myTTS.speak("가 있습니다.원하시는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
@@ -930,7 +974,7 @@ public class Menu extends AppCompatActivity {
                             public void run() {
                                 mVoiceBtn.performClick();
                             }
-                        }, 4500+2500*s);
+                        }, 4500+500*s);
 
                     }else if(res.equals("음료")){
                         s=0;
@@ -939,7 +983,7 @@ public class Menu extends AppCompatActivity {
                         for(String n : names_soda){
                             myTTS.setSpeechRate(0.95f);
                             myTTS.speak(n + "  ", TextToSpeech.QUEUE_ADD, null);
-                            s++;
+                            s += n.length();
                         }
                         myTTS.setSpeechRate(1f);
                         myTTS.speak("가 있습니다.원하시는 메뉴 이름을 말해주세요.", TextToSpeech.QUEUE_ADD, null);
@@ -949,23 +993,38 @@ public class Menu extends AppCompatActivity {
                             public void run() {
                                 mVoiceBtn.performClick();
                             }
-                        }, 4000+2000*s);
+                        }, 4500+500*s);
 
                     }else if(res.equals("다시") || res.equals("-")){
-                        String text1 = shopname + " 입니다.";
-                        String text2 = "메인메뉴는 메인, 사이드메뉴는 사이드, 음료는 음료, 또는 메뉴 이름 을 말해주세요.";
-                        String text3 = "장바구니 이동은 구매 입니다.";
+                        if(r.equals("y")){
+                            String text1 = "리뷰는 1개씩 끊어서 읽습니다.";
+                            String text2 = "주문을 하시려면 주문, 다음리뷰를 들으시려면 다음 을 말해주세요.";
 
-                        myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
-                        myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
-                        myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
+                            myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
+                            myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
 
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mVoiceBtn.performClick();
-                            }
-                        }, 10000);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 6500);
+                        }else {
+                            String text1 = shopname + " 입니다.";
+                            String text2 = "메인메뉴는 메인, 사이드메뉴는 사이드, 음료는 음료, 또는 메뉴 이름 을 말해주세요.";
+                            String text3 = "장바구니 이동은 구매 리뷰확인은 리뷰 입니다.";
+
+                            myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
+                            myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+                            myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 12000);
+                        }
                     }else if(res.equals("구매")){
                         a=1;
                         Intent i = new Intent(Menu.this, Payment.class);
@@ -975,12 +1034,108 @@ public class Menu extends AppCompatActivity {
                         i.putExtra("pay_price", pay_price);
                         i.putExtra("pay_content", pay_content);
                         i.putExtra("sttSwitch", stt);
+                        i.putExtra("sttHow", stth);
                         i.putExtra("shop",shopname);
                         i.putExtra("where", "menu");
 
                         startActivity(i);
                         if(a==1) break;
-                    }else if(res.equals("이전")){
+                    }else if(res.equals("리뷰")){
+                        mlistView = (ListView) findViewById(R.id.listView);
+                        rAdapter = new ListViewAdapterReview();
+                        q = "n";
+                        r = "y";
+                        GetData_review task = new GetData_review();
+                        task.execute("http://uswteami.dothome.co.kr/my/review/shop/json.php");
+
+                        if(!stth.equals("y")) {
+                            String text1 = "리뷰는 1개씩 끊어서 읽습니다.";
+                            String text2 = "주문을 하시려면 주문, 다음리뷰를 들으시려면 다음 을 말해주세요.";
+
+                            myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
+                            myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 7500);
+                        }
+                        else{
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 1000);
+                        }
+                    }else if(res.equals("주문")){
+                        q = "y";
+                        r = "n";
+
+                        while(names_main.size() != 0){
+                            names_main.remove(0);
+                        }
+                        while(names_side.size() != 0){
+                            names_side.remove(0);
+                        }
+                        while(names_soda.size() != 0){
+                            names_soda.remove(0);
+                        }
+
+                        GetData_main task1 = new GetData_main();
+                        task1.execute("http://uswteami.dothome.co.kr/my/board/chicken/menu/json_main.php");
+
+                        GetData_side task2 = new GetData_side();
+                        task2.execute("http://uswteami.dothome.co.kr/my/board/chicken/menu/json_side.php");
+
+                        GetData_soda task3 = new GetData_soda();
+                        task3.execute("http://uswteami.dothome.co.kr/my/board/chicken/menu/json_soda.php");
+
+                        String text1 = shopname + " 입니다.";
+                        String text2 = "명령어를 말해주세요.";
+
+                        myTTS.speak(text1, TextToSpeech.QUEUE_FLUSH, null);
+                        myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 3500);
+                    }
+                    else if(res.equals("다음") && r.equals("y")){
+                        if(b > listViewSize){
+                            String text = "더이상의 리뷰가 존재하지 않습니다.";
+                            String text2 = "주문을 하시려면 주문 을 말해주세요.";
+
+                            myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
+                            myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 5500);
+                        }else {
+                            int k = 0;
+                            String text = rAdapter.getName(b);
+                            k = text.length();
+                            myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
+                            b++;
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 400*k);
+                        }
+                    }
+                    else if(res.equals("이전")){
                         a=1;
                         Intent i = new Intent(Menu.this, Chicken.class);
                         i.putExtra("flag_from_main", "n");

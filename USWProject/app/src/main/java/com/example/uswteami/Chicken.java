@@ -57,15 +57,18 @@ public class Chicken extends AppCompatActivity {
     HashMap<String,String> shops = new HashMap<>();
     HashMap<String,String> shopnames = new HashMap<>();
     HashMap<String,String> grade = new HashMap<>();
-    List<String> names = new ArrayList<>();
+    ArrayList<String> names = new ArrayList<>();
     ListView mlistView;
     ListViewAdapter adapter;
 
     private static String ad;
     private static String place;
     private static String stt;
+    private static String stth;
+    private int placeNum = 0;
     private String sh;
     private int a = 0;
+    private int b = 0;
     private int s;
 
     private ImageButton back;
@@ -96,6 +99,7 @@ public class Chicken extends AppCompatActivity {
         if (get.getStringExtra("flag_from_main").equals("y")) {
             place = get.getStringExtra("place");
             stt = get.getStringExtra("sttSwitch");
+            stth = get.getStringExtra("sttHow");
             ad = get.getStringExtra("address");
         }
         place_layout.setText(place);
@@ -123,30 +127,42 @@ public class Chicken extends AppCompatActivity {
             Log.d(TAG, "fail");
         }
 
-        if (stt.equals("y")) {
+        if(stth.equals("y")){
+            myTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                }
+            });
+
+            mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    player_s.start();
+                    speak();
+                }
+            });
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mVoiceBtn.performClick();
+                }
+            }, 2000);
+
+        }else if (stt.equals("y")) {
             myTTS = new TextToSpeech(this, new OnInitListener() {
                 @Override
                 public void onInit(int status) {
                     s=0;
-                    String Text = sh + " 카테고리입니다.배달가능한 " + sh + " 집은";
+                    String Text = sh + " 카테고리입니다. 배달가능 음식점을 들으시려면 다음 을 말해주세요.";
                     myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
-
-                    for (String n : names) {
-                        myTTS.setSpeechRate(0.95f);
-                        myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
-                        s++;
-                    }
-
-                    myTTS.setSpeechRate(1f);
-                    String text2 = "입니다. 원하시는 가게이름 을 말해주세요.";
-                    myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             mVoiceBtn.performClick();
                         }
-                    }, 6500+2250*s);
+                    }, 6000);
                 }
             });
 
@@ -176,6 +192,7 @@ public class Chicken extends AppCompatActivity {
                 i.putExtra("grade", grade.get(adapter.getName(position)));
                 i.putExtra("flag_from_chicken", "y");
                 i.putExtra("sttSwitch", stt);
+                i.putExtra("sttHow", stth);
                 startActivity(i);
             }
         });
@@ -349,7 +366,7 @@ public class Chicken extends AppCompatActivity {
                         }
                         if(f) {
                             try{
-                                List<Address> mR = m.getFromLocationName("경기 화성시 봉담읍 와우안길 22 ", 1);
+                                List<Address> mR = m.getFromLocationName(address, 1);
                                 lat2 = mR.get(0).getLatitude();
                                 lon2 = mR.get(0).getLongitude();
                                 Log.d(TAG, "onComplete: " + lat2 + lon2);
@@ -368,6 +385,7 @@ public class Chicken extends AppCompatActivity {
                                 shopnames.put(shop, name);
                                 grade.put(name, g);
                                 adapter.addItem(String.format("%.1f", w), name, address);
+                                placeNum++;
 
                                 k++;
                                 i = -1;
@@ -384,7 +402,7 @@ public class Chicken extends AppCompatActivity {
                         }
                         if(f) {
                             try{
-                                List<Address> mR = m.getFromLocationName("경기 화성시 봉담읍 와우안길 22 ", 1);
+                                List<Address> mR = m.getFromLocationName(address, 1);
                                 lat2 = mR.get(0).getLatitude();
                                 lon2 = mR.get(0).getLongitude();
                                 Log.d(TAG, "onComplete: " + lat2 + lon2);
@@ -414,7 +432,7 @@ public class Chicken extends AppCompatActivity {
                 }
                 else {
                     try{
-                        List<Address> mR = m.getFromLocationName("경기 화성시 봉담읍 와우안길 22 ", 1);
+                        List<Address> mR = m.getFromLocationName(address, 1);
                         lat2 = mR.get(0).getLatitude();
                         lon2 = mR.get(0).getLongitude();
                         Log.d(TAG, "onComplete: " + lat2 + lon2);
@@ -459,7 +477,6 @@ public class Chicken extends AppCompatActivity {
         distance = distance + Math.cos(radLat1) * Math.cos(radLat2) * Math.cos(radDist);
         ret = EARTH_R * Math.acos(distance);
 
-        double rslt = Math.round(Math.round(ret) / 1000);
         //String result = rslt + " km";
         //if(rslt == 0) result = Math.round(ret) +" m";
         String result = Math.round(ret) + "";
@@ -513,6 +530,7 @@ public class Chicken extends AppCompatActivity {
                             i.putExtra("a", sh);
                             i.putExtra("shop", shops.get(n));
                             i.putExtra("sttSwitch", stt);
+                            i.putExtra("sttHow", stth);
                             i.putExtra("shopname", shopnames.get(shops.get(n)));
                             i.putExtra("grade", grade.get(shops.get(n)));
                             i.putExtra("flag_from_chicken", "y");
@@ -527,27 +545,66 @@ public class Chicken extends AppCompatActivity {
                         i.putExtra("place", place);
                         i.putExtra("flag_from_Payment", "n");
                         startActivity(i);
-                    }
-                    else if(result.get(0).equals("다시") || result.get(0).equals("-")){
+                    }else if(result.get(0).equals("다음")){
+                        int k = 0;
                         s=0;
-                        String Text = sh + " 카테고리입니다.배달가능한 " + sh + "집은";
-                        myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
-
-                        for(String n : names){
+                        for(int i = 0; i<5; i++){
+                            s += names.get(0).length();
                             myTTS.setSpeechRate(0.95f);
-                            myTTS.speak(n, TextToSpeech.QUEUE_ADD, null);
-                            s++;
+                            String text = names.get(b);
+                            myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
+
+                            b++;
+                            if(b > names.size() - 1){
+                                myTTS.setSpeechRate(1f);
+                                String text2 = "배달가능 음식점이 더이상 없습니다.처음부터 다시 들으시려면 초기화 를 말해주세요.";
+                                myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+                                if(s == 0) s = 4;
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 6000 +300 * s);
+                                k = 1;
+                                break;
+                            }
                         }
-                        myTTS.setSpeechRate(1f);
-                        String text2 = "입니다. 원하시는 가게이름을 말해주세요.";
-                        myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+
+                        if(k == 0) {
+                            myTTS.setSpeechRate(1f);
+                            String text2 = "원하시는 가게이름을 말해주세요.";
+                            myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 3000 + 300 * s);
+                        }
+                    }else if(result.get(0).equals("초기화")){
+                        b = 0;
+                        String Text = sh + " 카테고리입니다. 배달가능 음식점을 들으시려면 다음 을 말해주세요.";
+                        myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
 
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 mVoiceBtn.performClick();
                             }
-                        }, 6500+2250*s);
+                        }, 6500);
+                    }
+                    else if(result.get(0).equals("다시") || result.get(0).equals("-")){
+                        String Text = sh + " 카테고리입니다. 배달가능 음식점을 들으시려면 다음 을 말해주세요.";
+                        myTTS.speak(Text, TextToSpeech.QUEUE_FLUSH, null);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVoiceBtn.performClick();
+                            }
+                        }, 2500);
                     }else{
                         new Handler().postDelayed(new Runnable() {
                             @Override

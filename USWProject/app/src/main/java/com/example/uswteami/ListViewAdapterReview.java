@@ -60,7 +60,7 @@ public class ListViewAdapterReview extends BaseAdapter {
     }
 
     public String getName(int position){
-        return listViewItemList.get(position).getT2();
+        return listViewItemList.get(position).getT3();
     }
 
     public void addItem(String t1, String t2, String t3){

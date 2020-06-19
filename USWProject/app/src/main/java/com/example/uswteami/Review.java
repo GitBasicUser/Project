@@ -45,6 +45,7 @@ public class Review extends AppCompatActivity {
     private static final String TAG_JSON = "webnautes";
     private static final String TAG = "";
     private String stt;
+    private String stth;
     private String place;
     ImageButton back;
     Integer num = 0;
@@ -66,6 +67,7 @@ public class Review extends AppCompatActivity {
         if(get.getStringExtra("flag_from_main").equals("y")){
             shops = (ArrayList<String>) get.getSerializableExtra("shop");
             stt = get.getStringExtra("sttSwitch");
+            stth = get.getStringExtra("sttHow");
             place = get.getStringExtra("place");
         }
         final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
@@ -96,9 +98,11 @@ public class Review extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            player_s.start();
                             mVoiceBtn.performClick();
                         }
                     }, 2000+2250*s);
+
                 }
             });
         }
@@ -202,6 +206,25 @@ public class Review extends AppCompatActivity {
                     }
                     for(String n : shops){
                         if(res.equals(n)){
+                            list = (ListView)findViewById(R.id.listView);
+                            adapter = new ListViewAdapter();
+                            list.setAdapter(adapter);
+
+                            Intent i = new Intent(Review.this, ReviewInsert.class);
+                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("shop", n);
+
+                            shops.remove(n);
+
+                            Integer num = 0;
+                            for(String k : shops){
+                                num++;
+                                adapter.addItem(num.toString(), k, "");
+                            }
+
+                            i.putExtra("shops", shops);
+                            i.putExtra("sttSwitch", stt);
+                            startActivity(i);
 
                         }
                     }

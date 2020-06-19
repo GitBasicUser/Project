@@ -2,14 +2,21 @@ package com.example.uswteami;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -35,10 +42,22 @@ public class ReviewInsert extends AppCompatActivity {
     ArrayList arr = new ArrayList<>();
     ArrayList<String> shops = new ArrayList<>();
     ArrayAdapter adapter;
+    String stt;
+    String stth;
     EditText review;
     Button set;
     Spinner spi;
     String sh;
+    String star = "n";
+    String reviewStart = "n";
+
+    private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
+    private TextToSpeech myTTS;
+    private ImageButton mVoiceBtn;
+
+    String data1 = null;
+    String data2 = null;
+    String data3 = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +71,10 @@ public class ReviewInsert extends AppCompatActivity {
         Intent get = getIntent();
         sh = get.getStringExtra("shop");
         shops = (ArrayList<String>) get.getSerializableExtra("shops");
+        stt = get.getStringExtra("sttSwitch");
+        stth = get.getStringExtra("sttHow");
+        mVoiceBtn = findViewById(R.id.voiceBtn);
+        final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
 
         arr.add("0");
         arr.add("1");
@@ -87,15 +110,15 @@ public class ReviewInsert extends AppCompatActivity {
         set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String data1 = sh;
-                final String data2 = review.getText().toString();
-                final String data3 = d[0];
+                data1 = sh;
+                data2 = review.getText().toString();
+                data3 = d[0];
 
                 try {
                     PHPRequest request = new PHPRequest("http://uswteami.dothome.co.kr/my/review/shop/androidApply.php");
                     String result = request.PhPtest(data1, data2, data3);
                     if(result.equals("1")){
-                        Toast.makeText(getApplication(),"댓글 저장 완료",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication(),"리뷰 저장 완료",Toast.LENGTH_SHORT).show();
                     }
 
                 }catch (MalformedURLException e){
@@ -111,6 +134,31 @@ public class ReviewInsert extends AppCompatActivity {
 
             }
         });
+
+        if(stt.equals("y")){
+            myTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    String text1 = sh + "의 리뷰입니다.별점작성은 별점, 리뷰작성은 리뷰, 리뷰등록은 저장 을 말해주세요.";
+                    myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            player_s.start();
+                            mVoiceBtn.performClick();
+                        }
+                    }, 7000);
+
+                    mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            player_s.start();
+                            speak();
+                        }
+                    });
+                }
+            });
+        }
 
     }
 
@@ -135,7 +183,7 @@ public class ReviewInsert extends AppCompatActivity {
             String line = null;
 
             while((line = reader.readLine()) != null) {
-                Toast.makeText(getApplication(),line,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplication(),line,Toast.LENGTH_SHORT).show();
                 jsonHtml.append(line);
             }
 
@@ -167,6 +215,247 @@ public class ReviewInsert extends AppCompatActivity {
         }
     }
 
+
+    private void speak() {
+        //intent to show speech to text dialog 텍스트 대화 상자에 음성 표시
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+
+
+        //start intent 인텐트 시작
+        try {
+            //in there was no error
+            //show dialog
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+
+        } catch (Exception e) {
+            //if there was some error
+            //get message of error and show
+            Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+    //receive voice input and handle it 음성을 입력 받아 처리
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        final MediaPlayer player_f = MediaPlayer.create(this, R.raw.finish);
+
+        player_f.start();
+
+
+        switch (requestCode) {
+            case REQUEST_CODE_SPEECH_INPUT: {
+                if (resultCode == RESULT_OK && null != data) {
+                    final MediaPlayer player_s = MediaPlayer.create(this, R.raw.start);
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    if(stt.equals("y")) {
+                        if(star.equals("y")){
+                            if(result.get(0).equals("0") || result.get(0).equals("영")) {
+                                data3 = result.get(0);
+                                star = "n";
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 1000);
+                            }
+                            else if(result.get(0).equals("1") || result.get(0).equals("일")){
+                                data3 = result.get(0);
+                                star = "n";
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 1000);
+                            }
+                            else if(result.get(0).equals("이") || result.get(0).equals("2")) {
+                                data3 = result.get(0);
+                                star = "n";
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 1000);
+                            }
+                            else if(result.get(0).equals("3") || result.get(0).equals("삼")) {
+                                data3 = result.get(0);
+                                star = "n";
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 1000);
+                            }
+                            else if(result.get(0).equals("4") || result.get(0).equals("사")) {
+                                data3 = result.get(0);
+                                star = "n";
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 1000);
+                            }
+                            else if(result.get(0).equals("5") || result.get(0).equals("오")) {
+                                data3 = result.get(0);
+                                star = "n";
+                            }else{
+                                String text1 = "0 부터 5 까지 별점 개수를 정수로 말해주세요.";
+                                myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 2500);
+                            }
+                        }else if (reviewStart.equals("y")){
+                            data2 = result.get(0);
+
+                            String text1 = "리뷰작성이 완료되었습니다.";
+                            String text2 = "작성내용 확인은 확인, 리뷰등록은 저장 입니다.";
+
+                            myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
+                            myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    player_s.start();
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 5500);
+
+                            reviewStart = "n";
+                        }
+                        else if(result.get(0).equals("별점")){
+                            star = "y";
+                            String text1 = "0 부터 5 까지 별점 개수를 정수로 말해주세요.";
+                            myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    player_s.start();
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 4500);
+                        }
+                        else if(result.get(0).equals("리뷰")){
+                            reviewStart = "y";
+                            String text1 = "리뷰작성을 시작합니다.";
+                            myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    player_s.start();
+                                    mVoiceBtn.performClick();
+                                }
+                            }, 2500);
+                        }else if(result.get(0).equals("확인")){
+                            if(data2 == null){
+                                String text1 = "리뷰를 먼저 작성해주세요.";
+                                myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 2500);
+                            }else{
+                                int s = 0;
+                                s = data2.length();
+                                myTTS.speak(data2, TextToSpeech.QUEUE_ADD, null);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, s*600);
+                            }
+                        }else if(result.get(0).equals("저장")){
+                            if(data2 == null){
+                                String text1 = "별점 명령어를 이용해서 별점을 먼저 등록해주세요.";
+                                myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 4500);
+                            }else if(data3 == null){
+                                String text1 = "리뷰 명령어를 이용해서 리뷰를 먼저 작성해주세요.";
+                                myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 4500);
+                            }else{
+                                data1 = sh;
+                                try {
+                                    PHPRequest request = new PHPRequest("http://uswteami.dothome.co.kr/my/review/shop/androidApply.php");
+                                    String resulk = request.PhPtest(data1, data2, data3);
+                                    if(resulk.equals("1")){
+                                        String text1 = "리뷰 등록이 완료되었습니다.";
+                                        myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
+                                    }
+
+                                }catch (MalformedURLException e){
+                                    e.printStackTrace();
+                                }
+
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent i = new Intent(ReviewInsert.this, MainActivity.class);
+                                        i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                                        i.putExtra("flag_from_Review", "y");
+                                        i.putExtra("shops", shops);
+                                        i.putExtra("flag_from_Payment", "n");
+                                        startActivity(i);
+                                    }
+                                }, 2000);
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+
+        }
+    }
+
+    @Override
+    protected void onStop () {
+        super.onStop();
+        if (myTTS != null) {
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+    }
 
 }
 
