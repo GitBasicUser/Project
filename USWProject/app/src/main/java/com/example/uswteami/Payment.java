@@ -503,8 +503,8 @@ public class Payment extends AppCompatActivity {
                                 }, 6800);
                             }
                         } else if (res.equals("결제승인") || res.equals("결재승인")) {
-                            Toast.makeText(Payment.this, "결제가 완료되었습니다.", Toast.LENGTH_LONG).show();
-                            Intent i = new Intent(Payment.this, MainActivity.class);
+                            myTTS.speak("결제가 완료되었습니다.", TextToSpeech.QUEUE_ADD, null);
+                            final Intent i = new Intent(Payment.this, MainActivity.class);
                             i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
                             i.putExtra("name", pay_name);
                             i.putExtra("price", pay_price);
@@ -513,7 +513,12 @@ public class Payment extends AppCompatActivity {
                             i.putExtra("shop",sh);
                             i.putExtra("flag_from_Review", "n");
                             i.putExtra("flag_from_Payment", "y");
-                            startActivity(i);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    startActivity(i);
+                                }
+                            }, 1800);
                         } else {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
