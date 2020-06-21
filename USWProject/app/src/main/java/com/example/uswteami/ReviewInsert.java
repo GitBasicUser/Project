@@ -147,7 +147,7 @@ public class ReviewInsert extends AppCompatActivity {
                             player_s.start();
                             mVoiceBtn.performClick();
                         }
-                    }, 7000);
+                    }, 8000);
 
                     mVoiceBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -267,7 +267,7 @@ public class ReviewInsert extends AppCompatActivity {
                                     }
                                 }, 1000);
                             }
-                            else if(result.get(0).equals("1") || result.get(0).equals("일")){
+                            else if(result.get(0).equals("1") || result.get(0).equals("일") || result.get(0).equals("하나")){
                                 data3 = result.get(0);
                                 star = "n";
                                 new Handler().postDelayed(new Runnable() {
@@ -278,7 +278,7 @@ public class ReviewInsert extends AppCompatActivity {
                                     }
                                 }, 1000);
                             }
-                            else if(result.get(0).equals("이") || result.get(0).equals("2")) {
+                            else if(result.get(0).equals("이") || result.get(0).equals("2") || result.get(0).equals("둘")) {
                                 data3 = result.get(0);
                                 star = "n";
                                 new Handler().postDelayed(new Runnable() {
@@ -289,7 +289,7 @@ public class ReviewInsert extends AppCompatActivity {
                                     }
                                 }, 1000);
                             }
-                            else if(result.get(0).equals("3") || result.get(0).equals("삼")) {
+                            else if(result.get(0).equals("3") || result.get(0).equals("삼") || result.get(0).equals("셋")) {
                                 data3 = result.get(0);
                                 star = "n";
                                 new Handler().postDelayed(new Runnable() {
@@ -300,7 +300,7 @@ public class ReviewInsert extends AppCompatActivity {
                                     }
                                 }, 1000);
                             }
-                            else if(result.get(0).equals("4") || result.get(0).equals("사")) {
+                            else if(result.get(0).equals("4") || result.get(0).equals("사") || result.get(0).equals("넷")) {
                                 data3 = result.get(0);
                                 star = "n";
                                 new Handler().postDelayed(new Runnable() {
@@ -311,11 +311,18 @@ public class ReviewInsert extends AppCompatActivity {
                                     }
                                 }, 1000);
                             }
-                            else if(result.get(0).equals("5") || result.get(0).equals("오")) {
+                            else if(result.get(0).equals("5") || result.get(0).equals("오") || result.get(0).equals("다섯")) {
                                 data3 = result.get(0);
                                 star = "n";
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player_s.start();
+                                        mVoiceBtn.performClick();
+                                    }
+                                }, 1000);
                             }else{
-                                String text1 = "0 부터 5 까지 별점 개수를 정수로 말해주세요.";
+                                String text1 = "0 부터 다섯 까지 별점 개수를 정수로 말해주세요.";
                                 myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
@@ -323,7 +330,7 @@ public class ReviewInsert extends AppCompatActivity {
                                         player_s.start();
                                         mVoiceBtn.performClick();
                                     }
-                                }, 2500);
+                                }, 4500);
                             }
                         }else if (reviewStart.equals("y")){
                             data2 = result.get(0);
@@ -346,7 +353,7 @@ public class ReviewInsert extends AppCompatActivity {
                         }
                         else if(result.get(0).equals("별점")){
                             star = "y";
-                            String text1 = "0 부터 5 까지 별점 개수를 정수로 말해주세요.";
+                            String text1 = "0 부터 다섯 까지 별점 개수를 정수로 말해주세요.";
                             myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
                             new Handler().postDelayed(new Runnable() {
                                 @Override

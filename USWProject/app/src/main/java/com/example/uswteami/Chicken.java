@@ -544,6 +544,7 @@ public class Chicken extends AppCompatActivity {
                         Intent i = new Intent(Chicken.this, MainActivity.class);
                         i.putExtra("place", place);
                         i.putExtra("flag_from_Payment", "n");
+                        i.putExtra("flag_from_Review", "n");
                         startActivity(i);
                     }else if(result.get(0).equals("다음")){
                         int k = 0;

@@ -432,6 +432,7 @@ public class MainActivity extends AppCompatActivity {
                         } else if (result.get(0).equals("사용법")) {
                             String text1 = "해당 배달앱은 음성인식을 적용하여 특정 명령어들로 주문이 가능한 배달앱 입니다.";
                             String text2 = "명령어 입력 후, 안내가 나오지 않고 알림음이 다시 나온다면, 해당 명령어를 천천히 다시 말해주시기 바랍니다.";
+                            String text = "알림음도 나오지 않을경우, 1회 터치후 다시 말해주세요.";
                             String text3 = "안내로 나오지 않아도 항상 적용되는 명령어에는";
                             String text4 = "이전페이지로 돌아가게 해주는 이전, 안내를 한번 더 들려주는 다시 가 있습니다.";
                             String text5 = "주문을 1회이상 하신 후, 재실행하여 다시 주문을 원하시면 주문내역, 리뷰를 작성하시려면 리뷰를 말해주세요.";
@@ -440,6 +441,7 @@ public class MainActivity extends AppCompatActivity {
 
                             myTTS.speak(text1, TextToSpeech.QUEUE_ADD, null);
                             myTTS.speak(text2, TextToSpeech.QUEUE_ADD, null);
+                            myTTS.speak(text, TextToSpeech.QUEUE_ADD, null);
                             myTTS.speak(text3, TextToSpeech.QUEUE_ADD, null);
                             myTTS.setSpeechRate(0.95f);
                             myTTS.speak(text4, TextToSpeech.QUEUE_ADD, null);
@@ -454,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
                                     player_s.start();
                                     mVoiceBtn.performClick();
                                 }
-                            }, 55000);
+                            }, 60000);
                         } else if (result.get(0).equals("종료")) {
                             sttSwitch = "n";
                             Toast.makeText(MainActivity.this, "음성인식을 종료합니다.", Toast.LENGTH_LONG).show();

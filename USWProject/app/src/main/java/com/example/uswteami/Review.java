@@ -49,6 +49,7 @@ public class Review extends AppCompatActivity {
     private String place;
     ImageButton back;
     Integer num = 0;
+    String name = null;
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
     private TextToSpeech myTTS;
     private ImageButton mVoiceBtn;
@@ -101,7 +102,7 @@ public class Review extends AppCompatActivity {
                             player_s.start();
                             mVoiceBtn.performClick();
                         }
-                    }, 2000+2250*s);
+                    }, 2000+2000*s);
 
                 }
             });
@@ -206,27 +207,30 @@ public class Review extends AppCompatActivity {
                     }
                     for(String n : shops){
                         if(res.equals(n)){
-                            list = (ListView)findViewById(R.id.listView);
-                            adapter = new ListViewAdapter();
-                            list.setAdapter(adapter);
-
-                            Intent i = new Intent(Review.this, ReviewInsert.class);
-                            i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
-                            i.putExtra("shop", n);
-
-                            shops.remove(n);
-
-                            Integer num = 0;
-                            for(String k : shops){
-                                num++;
-                                adapter.addItem(num.toString(), k, "");
-                            }
-
-                            i.putExtra("shops", shops);
-                            i.putExtra("sttSwitch", stt);
-                            startActivity(i);
-
+                            name = n;
                         }
+                    }
+                    if(name != null){
+                        list = (ListView)findViewById(R.id.listView);
+                        adapter = new ListViewAdapter();
+                        list.setAdapter(adapter);
+
+                        Intent i = new Intent(Review.this, ReviewInsert.class);
+                        i.setFlags(i.FLAG_ACTIVITY_CLEAR_TOP);
+                        i.putExtra("shop", name);
+
+                        shops.remove(name);
+
+                        Integer num = 0;
+                        for(String k : shops){
+                            num++;
+                            adapter.addItem(num.toString(), k, "");
+                        }
+                        name = null;
+
+                        i.putExtra("shops", shops);
+                        i.putExtra("sttSwitch", stt);
+                        startActivity(i);
                     }
 
                     break;
